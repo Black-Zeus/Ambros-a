@@ -6,40 +6,69 @@ Esta es la estructura propuesta para el proyecto **Ambrosía**, con una breve de
 Ambrosia/
 │
 ├── assets/                  # Archivos gráficos y multimedia
-│   ├── icons/               # Iconos (SVG, PNG), ejemplo: lechuza, caldero
-│   ├── illustrations/       # Ilustraciones de ambientación y narrativa
-│   ├── fonts/               # Tipografías mágicas o personalizadas
-│   ├── audio/               # Sonidos mágicos, ambiente o efectos
-│   └── raw/                 # Assets no clasificados o sin usar aún
+│   ├── icons/               # Iconos mágicos (SVG, PNG), ej: lechuza, caldero
+│   ├── illustrations/       # Ilustraciones narrativas o splash
+│   ├── fonts/               # Tipografías decorativas
+│   ├── audio/               # Sonidos, efectos mágicos
+│   └── raw/                 # Assets sin clasificar o sin uso aún
 │
 ├── src/                     # Código fuente principal
-│   ├── components/          # Componentes reutilizables (Botones, Cards)
-│   ├── screens/             # Vistas completas: Home, Receta, Herbolario...
-│   ├── navigation/          # Lógica de navegación (React Navigation)
-│   ├── hooks/               # Custom hooks de React
-│   ├── context/             # Contextos globales (usuario, tema, recetas)
-│   ├── data/                # Datos estáticos o ejemplos (JSONs, listas)
-│   ├── utils/               # Funciones auxiliares, validaciones, helpers
-│   └── styles/              # Estilos globales y temas visuales
+│   ├── atomic/              # Componentes visuales reutilizables (Atomic Design)
+│   │   ├── atoms/               # Elementos simples (Botón, Ícono, Input)
+│   │   ├── molecules/           # Combinaciones pequeñas (SearchField, CardPreview)
+│   │   └── organisms/           # Estructuras mayores (NavBar, Footer, RecipeList)
 │
-├── templates/               # Plantillas HTML para exportar o compartir
-│   ├── recipe_paper.html    # Plantilla estilo pergamino
-│   └── recipe_card.html     # Plantilla de receta tipo tarjeta
+│   ├── features/            # Funcionalidades específicas por dominio
+│   │   ├── recipes/             # Gestión de recetas mágicas
+│   │   │   ├── components/      # Componentes propios del módulo
+│   │   │   ├── services/        # Lógica de datos (carga, filtros, favoritos)
+│   │   │   ├── hooks/           # Hooks como useRecipeForm, useIngredients
+│   │   │   ├── types/           # Tipado exclusivo de recetas
+│   │   │   └── index.ts
+│   │   ├── herbolario/          # Plantas mágicas y efectos
+│   │   └── ...                  # Nuevas features futuras
 │
-├── docs/                    # Documentación técnica y narrativa
-│   ├── roadmap.md           # Módulos y planificación general
-│   ├── todo.md              # Lista de ideas, tareas y pendientes
-│   ├── navigation_map.md    # Árbol de navegación visual
-│   └── lore.md              # Narrativa y mundo mágico de Ambrosía
+│   ├── shared/              # Recursos compartidos entre features
+│   │   ├── hooks/               # Hooks globales reutilizables
+│   │   ├── services/            # API, autenticación, almacenamiento
+│   │   ├── utils/               # Funciones auxiliares (validaciones, formateos)
+│   │   └── types/               # Tipos generales (User, Session, etc.)
 │
-├── system/                  # Configuración y estructura lógica base
-│   ├── config.json          # Configuraciones iniciales
-│   └── schema/              # Esquemas de datos o tipos definidos
+│   ├── layout/              # Componentes estructurales persistentes
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
+│   │   └── LayoutWrapper.tsx
 │
-├── tests/                   # Pruebas unitarias y de integración
+│   ├── pages/               # Pantallas completas asociadas a rutas
+│   │   ├── HomePage.tsx
+│   │   ├── RecipeDetailPage.tsx
+│   │   └── ...
 │
-├── .gitignore               # Archivos a excluir del control de versiones
+│   ├── styles/              # Estilos globales, Tailwind config, tokens
+│   ├── router/              # Definición de rutas, navegación
+│   ├── config/              # Configuraciones generales, endpoints mágicos
+│   └── app/                 # Punto de entrada, contextos globales, providers
+│
+├── templates/               # Plantillas visuales de recetas
+│   ├── recipe_paper.html    # Estilo pergamino
+│   └── recipe_card.html     # Estilo carta mágica
+│
+├── docs/                    # Documentación técnica y mágica
+│   ├── folder_structure.md  # Este documento
+│   ├── manual_identidad.md  # Identidad visual y elementos mágicos
+│   ├── navigation_map.md    # Árbol de navegación del sistema
+│   ├── roadmap.md           # Planificación general por hitos
+│   ├── todo.md              # Lista de tareas e ideas
+│   └── lore.md              # Narrativa y universo de Ambrosía
+│
+├── system/                  # Esquemas y configuraciones base
+│   ├── config.json
+│   └── schema/
+│
+├── tests/                   # Pruebas unitarias y funcionales
+│
+├── .gitignore               # Exclusiones de Git
 ├── LICENSE                  # Licencia del proyecto
-├── README.md                # Documentación inicial del proyecto
-└── App.js                   # Punto de entrada de la app (Expo)
+├── README.md                # Presentación inicial
+└── App.js                   # Entrada de la app (Expo)
 ```
