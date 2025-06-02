@@ -103,3 +103,26 @@
 - [ ] Generar PDF estilo pergamino.
 - [ ] Navegación por símbolos y no solo texto.
 
+----
+## 🗺️ Mapa Visual de Navegación (Árbol de Pantallas)
+
+```text
+🌿 Ambrosía
+└── 🔮 Splash / Ritual de Inicio
+    └── 🏠 Home (Página Principal)
+        ├── 🔍 Buscador de recetas
+        ├── 📖 Ver Receta
+        │   └── 🦉 Compartir Receta (Lechuza)
+        │       └── 📜 Plantilla HTML (Pergamino)
+        ├── ✍️ Crear / Modificar Receta
+        │   ├── 🧬 Marcar como receta de sangre (Linaje)
+        │   └── 🌳 Árbol de Transmutación
+        ├── 🌿 Herbolario
+        ├── 🧙 Quién Soy
+        ├── 📚 Acerca de / Manifiesto
+        └── ⚙️ Configuración
+            ├── 🎨 Modo visual (Oscuro / Pergamino)
+            ├── ☁️ Backup con Google (Opcional)
+            └── ♻️ Restaurar / Exportar
+```
+
