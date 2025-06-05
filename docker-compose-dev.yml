@@ -1,0 +1,25 @@
+services:
+  expo:
+    container_name: ambrosia-expo-dev
+    build:
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.dev
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - ./scripts:/scripts:ro        # 👈 Montaje del script en modo solo lectura
+      - /app/node_modules
+    labels:
+      - stack=Ambrosia
+    ports:
+      - "19000:19000"   # Android (exp://)
+      - "19001:19001"   # Fast refresh
+      - "19002:19002"   # DevTools web
+      - "19006:19006"   # Expo web
+      - "8081:8081"     # Metro bundler
+    environment:
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+      - EXPO_NO_TELEMETRY=1
+      - REACT_NATIVE_PACKAGER_HOSTNAME=10.101.0.148  # 👈 tu IP real
+    entrypoint: ["sleep", "infinity"]    # 👈 El contenedor queda esperando
+    tty: true
