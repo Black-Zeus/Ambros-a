@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrosía - Reconocimientos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Textura de pergamino */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1" seed="1"/></filter></defs><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4af37;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        /* Introducción */
+        .intro-section {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(101, 67, 33, 0.1) 100%);
+            border: 3px solid rgba(139, 69, 19, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .intro-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .intro-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .intro-text {
+            font-size: 1.1rem;
+            color: rgba(212, 175, 55, 0.9);
+            line-height: 1.7;
+            font-style: italic;
+        }
+        
+        .intro-text .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        /* Categorías de reconocimientos */
+        .recognition-categories {
+            margin-bottom: 40px;
+        }
+        
+        .category {
+            margin-bottom: 35px;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 2px solid rgba(212, 175, 55, 0.25);
+            border-radius: 15px;
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            color: #d4af37;
+        }
+        
+        .category-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .recognition-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .recognition-item {
+            background: rgba(212, 175, 55, 0.06);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .recognition-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.08), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .recognition-item:hover::before {
+            left: 100%;
+        }
+        
+        .recognition-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15);
+        }
+        
+        .recognition-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .recognition-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        
+        .recognition-info {
+            flex: 1;
+        }
+        
+        .recognition-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #d4af37;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .recognition-role {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+        }
+        
+        .recognition-description {
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .recognition-quote {
+            font-style: italic;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(139, 69, 19, 0.1);
+            border-left: 4px solid rgba(212, 175, 55, 0.4);
+            border-radius: 0 8px 8px 0;
+            color: rgba(212, 175, 55, 0.9);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Dedicatoria especial */
+        .dedication-section {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dedication-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212, 175, 55, 0.05), transparent);
+            animation: rotate 30s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        
+        .dedication-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            color: #d4af37;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .dedication-text {
+            font-size: 1.2rem;
+            color: rgba(212, 175, 55, 0.9);
+            line-height: 1.8;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .dedication-text .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        /* Footer de gratitud */
+        .gratitude-footer {
+            text-align: center;
+            padding: 30px;
+            background: rgba(139, 69, 19, 0.1);
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .footer-quote {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #d4af37;
+            font-style: italic;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .footer-attribution {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+        }
+        
+        /* Responsive */
+        @media (min-width: 640px) {
+            .container {
+                padding: 30px 40px;
+            }
+            
+            .recognition-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 60px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .intro-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 639px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                margin-bottom: 30px;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .intro-section {
+                padding: 25px 20px;
+            }
+            
+            .intro-title {
+                font-size: 1.5rem;
+            }
+            
+            .intro-text {
+                font-size: 1rem;
+            }
+            
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .category-title {
+                font-size: 1.2rem;
+            }
+            
+            .recognition-item {
+                padding: 20px;
+            }
+            
+            .recognition-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .dedication-section {
+                padding: 30px 20px;
+            }
+            
+            .dedication-title {
+                flex-direction: column;
+                gap: 5px;
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="#" class="back-button">←</a>
+            <h1 class="page-title">Reconocimientos</h1>
+        </header>
+        
+        <!-- Introducción -->
+        <section class="intro-section">
+            <div class="intro-icon">🙏</div>
+            <h2 class="intro-title">Gratitud Ancestral</h2>
+            <div class="intro-text">
+                Este grimorio no habría sido posible sin la <span class="highlight">sabiduría colectiva</span> 
+                de innumerables almas que han contribuido con su conocimiento, tiempo y energía. 
+                Cada línea de código, cada diseño, cada idea ha sido nutrida por 
+                <span class="highlight">generaciones de cocineros y creadores</span> que vinieron antes que nosotros.
+            </div>
+        </section>
+        
+        <!-- Categorías de reconocimientos -->
+        <section class="recognition-categories">
+            <!-- Sabiduría Ancestral -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">👵</div>
+                    <h3 class="category-title">Sabiduría Ancestral</h3>
+                </div>
+                <div class="recognition-grid">
+                    <div class="recognition-item">
+                        <div class="recognition-header">
+                            <div class="recognition-avatar">👵</div>
+                            <div class="recognition-info">
+                                <div class="recognition-name">Las Abuelas del Mundo</div>
+                                <div class="recognition-role">Guardianas de la Tradición</div>
+                            </div>
+                        </div>
+                        <div class="recognition-description">
+                            A todas las abuelas que nunca escribieron sus recetas pero las grabaron 
+                            en nuestros corazones con cada bocado lleno de amor. Sus manos sabias 
+                            y su intuición culinaria son la verdadera inspiración de este grimorio.
+                        </div>
+                        <div class="recognition-quote">
+                            "Las mejores recetas no se miden en tazas, sino en puñados de amor."
+                        </div>
+                    </div>
+                    
+                    <div class="recognition-item">
+                        <div class="recognition-header">
+                            <div class="recognition-avatar">🌍</div>
+                            <div class="recognition-info">
+                                <div class="recognition-name">Culturas Culinarias Ancestrales</div>
+                                <div class="recognition-role">Fuentes de Sabiduría</div>
+                            </div>
+                        </div>
+                        <div class="recognition-description">
+                            A cada cultura que ha preservado sus tradiciones culinarias a través 
+                            de milenios. Desde las especias de Oriente hasta los granos americanos, 
+                            cada civilización ha aportado un verso al gran poema gastronómico.
+                        </div>
+                        <div class="recognition-quote">
+                            "En cada plato vive la historia de un pueblo."
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Comunidad Beta -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">🧪</div>
+                    <h3 class="category-title">Alquimistas Beta</h3>
+                </div>
+                <div class="recognition-grid">
+                    <div class="recognition-item">
+                        <div class="recognition-header">
+                            <div class="recognition-avatar">🔬</div>
+                            <div class="recognition-info">
+                                <div class="recognition-name">Beta Testers Valientes</div>
+                                <div class="recognition-role">Exploradores del Código</div>
+                            </div>
+                        </div>
+                        <div class="recognition-description">
+                            A los valientes druidas que se aventuraron en las primeras versiones 
+                            inestables del grimorio. Sus reportes de bugs, sugerencias y paciencia 
+                            infinita moldearon cada aspecto de la experiencia final.
+                        </div>
+                        <div class="recognition-quote">
+                            "Sin errores no hay evolución, sin feedback no hay perfección."
+                        </div>
+                    </div>
+                    
+                    <div class="recognition-item">
+                        <div class="recognition-header">
+                            <div class="recognition-avatar">💡</div>
+                            <div class="recognition-info">
+                                <div class="recognition-name">Contribuidores de Ideas</div>
+                                <div class="recognition-role">Visionarios Culinarios</div>
+                            </div>
+                        </div>
+                        <div class="recognition-description">
+                            A quienes compartieron sus ideas brillantes en foros, conversaciones 
+                            y comentarios casuales. Muchas funcionalidades del grimorio nacieron 
+                            de esos momentos de inspiración compartida.
+                        </div>
+                        <div class="recognition-quote">
+                            "Las mejores ideas surgen cuando las mentes se encuentran."
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        
+        </section>
+        
+        <!-- Dedicatoria especial -->
+        <section class="dedication-section">
+            <h3 class="dedication-title">
+                💛 Dedicatoria Especial
+            </h3>
+            <div class="dedication-text">
+                Este grimorio está dedicado a <span class="highlight">todos los cocineros caseros</span> 
+                que transforman ingredientes simples en momentos mágicos. A quienes entienden que cocinar 
+                no es solo nutrir el cuerpo, sino <span class="highlight">alimentar el alma</span>.
+                <br><br>
+                A los que experimentan sin miedo, a los que preservan tradiciones con amor, 
+                y a los que comparten sus creaciones con generosidad. 
+                <span class="highlight">Ustedes son los verdaderos druidas culinarios</span>.
+            </div>
+        </section>
+        
+        <!-- Footer de gratitud -->
+        <footer class="gratitude-footer">
+            <div class="footer-quote">
+                "La gratitud es el ingrediente secreto que hace que todo sepa mejor"
+            </div>
+            <div class="footer-attribution">
+                — Con infinito agradecimiento, El Círculo Druídico de Ambrosía
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

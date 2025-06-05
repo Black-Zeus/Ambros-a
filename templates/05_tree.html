@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrosía - Árbol de Transmutación</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Textura de pergamino */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1" seed="1"/></filter></defs><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4af37;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .control-btn {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 10px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .control-btn:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(184, 134, 11, 0.2) 100%);
+            border-color: rgba(212, 175, 55, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Selector de receta */
+        .recipe-selector {
+            margin-bottom: 30px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+        }
+        
+        .selector-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .recipe-select {
+            width: 100%;
+            padding: 15px 18px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            color: #d4af37;
+            font-size: 1rem;
+            font-family: 'Crimson Text', serif;
+            transition: all 0.3s ease;
+        }
+        
+        .recipe-select:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.6);
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+        }
+        
+        /* Área del árbol */
+        .tree-container {
+            flex-grow: 1;
+            position: relative;
+            min-height: 600px;
+            background: rgba(212, 175, 55, 0.02);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            overflow: auto;
+        }
+        
+        .tree-svg {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+        }
+        
+        /* Nodos del árbol */
+        .recipe-node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .recipe-node:hover .node-circle {
+            stroke-width: 3;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));
+        }
+        
+        .node-circle {
+            fill: rgba(212, 175, 55, 0.1);
+            stroke: #d4af37;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .node-circle.ancestral {
+            fill: rgba(139, 69, 19, 0.2);
+            stroke: #d4af37;
+            stroke-width: 3;
+        }
+        
+        .node-circle.current {
+            fill: rgba(212, 175, 55, 0.3);
+            stroke: #d4af37;
+            stroke-width: 4;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
+        }
+        
+        .node-text {
+            fill: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            font-weight: 500;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+        
+        .node-subtitle {
+            fill: rgba(212, 175, 55, 0.7);
+            font-family: 'Crimson Text', serif;
+            font-size: 10px;
+            font-style: italic;
+            text-anchor: middle;
+            dominant-baseline: central;
+        }
+        
+        /* Conexiones del árbol */
+        .tree-connection {
+            stroke: rgba(212, 175, 55, 0.4);
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 5,5;
+            animation: dash 20s linear infinite;
+        }
+        
+        .tree-connection.ancestral {
+            stroke: rgba(139, 69, 19, 0.6);
+            stroke-width: 3;
+            stroke-dasharray: none;
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -200;
+            }
+        }
+        
+        /* Panel de información */
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 280px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s ease;
+            z-index: 10;
+        }
+        
+        .info-panel.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .info-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: #d4af37;
+            margin-bottom: 5px;
+        }
+        
+        .info-type {
+            font-size: 0.8rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+        }
+        
+        .close-info {
+            width: 30px;
+            height: 30px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            color: #d4af37;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        .close-info:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+        
+        .info-content {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+        
+        .info-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+        
+        .meta-label {
+            color: rgba(212, 175, 55, 0.7);
+        }
+        
+        .meta-value {
+            color: #d4af37;
+            font-weight: 500;
+        }
+        
+        .info-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .info-btn {
+            flex: 1;
+            padding: 8px 12px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
+            color: #d4af37;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .info-btn:hover {
+            background: rgba(212, 175, 55, 0.25);
+            border-color: rgba(212, 175, 55, 0.6);
+        }
+        
+        /* Leyenda */
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .legend-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: rgba(212, 175, 55, 0.8);
+        }
+        
+        .legend-symbol {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid;
+            flex-shrink: 0;
+        }
+        
+        .legend-symbol.ancestral {
+            background: rgba(139, 69, 19, 0.2);
+            border-color: #d4af37;
+        }
+        
+        .legend-symbol.variant {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #d4af37;
+        }
+        
+        .legend-symbol.current {
+            background: rgba(212, 175, 55, 0.3);
+            border-color: #d4af37;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Estado vacío */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: rgba(212, 175, 55, 0.6);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #d4af37;
+        }
+        
+        .empty-description {
+            font-style: italic;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 60px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .tree-container {
+                padding: 40px;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                margin-bottom: 25px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .header-left {
+                justify-content: center;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+            
+            .control-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .tree-container {
+                padding: 20px;
+                min-height: 500px;
+            }
+            
+            .info-panel {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                right: auto;
+                width: 90%;
+                max-width: 350px;
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            
+            .info-panel.show {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            
+            .legend {
+                position: static;
+                margin-top: 20px;
+            }
+            
+            .legend-items {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .node-text {
+                font-size: 10px;
+            }
+            
+            .node-subtitle {
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-left">
+                <a href="#" class="back-button">←</a>
+                <h1 class="page-title">Árbol de Transmutación</h1>
+            </div>
+            <div class="controls">
+                <button class="control-btn" id="zoomInBtn">🔍 Acercar</button>
+                <button class="control-btn" id="zoomOutBtn">🔍 Alejar</button>
+                <button class="control-btn" id="centerBtn">🎯 Centrar</button>
+            </div>
+        </header>
+        
+        <section class="recipe-selector">
+            <div class="selector-title">
+                🧬 Selecciona una Receta Ancestral
+            </div>
+            <select class="recipe-select" id="recipeSelect">
+                <option value="">Elige una receta para ver su linaje...</option>
+                <option value="sopa-calabaza">Sopa de Calabaza Ancestral</option>
+                <option value="pocion-miel">Poción de Miel Dorada</option>
+                <option value="estofado-setas">Estofado de Setas del Bosque</option>
+                <option value="infusion-hierbas">Infusión de Hierbas Lunares</option>
+            </select>
+        </section>
+        
+        <section class="tree-container" id="treeContainer">
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🌳</div>
+                <div class="empty-title">El Árbol Aguarda</div>
+                <div class="empty-description">
+                    Selecciona una receta ancestral para revelar su linaje mágico<br>
+                    y descubrir todas las transmutaciones que han surgido de ella.
+                </div>
+            </div>
+            
+            <svg class="tree-svg" id="treeSvg" style="display: none;">
+                <!-- El árbol se generará aquí dinámicamente -->
+            </svg>
+        </section>
+        
+        <!-- Panel de información -->
+        <div class="info-panel" id="infoPanel">
+            <div class="info-header">
+                <div>
+                    <div class="info-title" id="infoTitle">Sopa de Calabaza</div>
+                    <div class="info-type" id="infoType">Receta Ancestral</div>
+                </div>
+                <button class="close-info" id="closeInfo">✕</button>
+            </div>
+            <div class="info-content" id="infoContent">
+                Una receta ancestral transmitida por generaciones de druidas. 
+                Su esencia calabaza dorada nutre el alma en las noches de otoño.
+            </div>
+            <div class="info-meta" id="infoMeta">
+                <div class="meta-item">
+                    <span class="meta-label">Creada:</span>
+                    <span class="meta-value">Hace 3 meses</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Variantes:</span>
+                    <span class="meta-value">4 transmutaciones</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Dificultad:</span>
+                    <span class="meta-value">⭐⭐</span>
+                </div>
+            </div>
+            <div class="info-actions">
+                <button class="info-btn" id="viewRecipeBtn">Ver Receta</button>
+                <button class="info-btn" id="createVariantBtn">Crear Variante</button>
+            </div>
+        </div>
+        
+        <!-- Leyenda -->
+        <div class="legend">
+            <div class="legend-title">Leyenda del Linaje</div>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-symbol ancestral"></div>
+                    <span>Receta Ancestral</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-symbol variant"></div>
+                    <span>Variante</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-symbol current"></div>
+                    <span>Seleccionada</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

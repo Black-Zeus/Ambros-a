@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrosía - Herbolario</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Textura de pergamino */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1" seed="1"/></filter></defs><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4af37;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        .add-ingredient-header-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .add-ingredient-header-btn:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(184, 134, 11, 0.2) 100%);
+            border-color: rgba(212, 175, 55, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Buscador */
+        .search-section {
+            margin-bottom: 30px;
+        }
+        
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            color: #d4af37;
+            font-size: 1rem;
+            font-family: 'Crimson Text', serif;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.6);
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(212, 175, 55, 0.6);
+            font-style: italic;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #d4af37;
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+        
+        /* Filtros */
+        .filters-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .filter-chip {
+            padding: 8px 16px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            color: #d4af37;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        
+        .filter-chip:hover,
+        .filter-chip.active {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-1px);
+        }
+        
+        .filter-chip.active {
+            background: rgba(212, 175, 55, 0.25);
+            border-color: rgba(212, 175, 55, 0.7);
+        }
+        
+        /* Estadísticas - SIEMPRE 3 COLUMNAS */
+        .stats-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 15px 20px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+        }
+        
+        .stats-item {
+            text-align: center;
+        }
+        
+        .stats-number {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #d4af37;
+            display: block;
+        }
+        
+        .stats-label {
+            font-size: 0.8rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+        }
+        
+        /* Grid de ingredientes */
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            flex-grow: 1;
+        }
+        
+        .ingredient-card {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ingredient-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .ingredient-card:hover::before {
+            left: 100%;
+        }
+        
+        .ingredient-card:hover {
+            border-color: rgba(212, 175, 55, 0.6);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.1) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+        }
+        
+        .ingredient-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .ingredient-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        
+        .ingredient-info {
+            flex: 1;
+        }
+        
+        .ingredient-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #d4af37;
+            margin-bottom: 5px;
+        }
+        
+        .ingredient-scientific {
+            font-size: 0.85rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+        
+        .ingredient-type {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #d4af37;
+        }
+        
+        .ingredient-description {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+        
+        .ingredient-properties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .property-tag {
+            padding: 6px 12px;
+            background: rgba(139, 69, 19, 0.2);
+            border: 1px solid rgba(139, 69, 19, 0.4);
+            border-radius: 15px;
+            font-size: 0.75rem;
+            color: #d4af37;
+        }
+        
+        .ingredient-usage {
+            font-size: 0.85rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+            line-height: 1.3;
+        }
+        
+        .ingredient-actions {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .ingredient-card:hover .ingredient-actions {
+            opacity: 1;
+        }
+        
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            background: rgba(212, 175, 55, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: #1a0f0a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        .action-btn:hover {
+            background: #d4af37;
+            transform: scale(1.1);
+        }
+        
+        /* Estado vacío */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(212, 175, 55, 0.6);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #d4af37;
+        }
+        
+        .empty-description {
+            font-style: italic;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+        
+        .empty-action {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .empty-action:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(184, 134, 11, 0.2) 100%);
+            border-color: rgba(212, 175, 55, 0.6);
+            transform: translateY(-2px);
+        }
+        
+        /* Modal para agregar ingrediente */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 100%);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: #d4af37;
+        }
+        
+        .close-modal {
+            width: 40px;
+            height: 40px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            color: #d4af37;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .close-modal:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #d4af37;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: #d4af37;
+            font-size: 0.9rem;
+            font-family: 'Crimson Text', serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.6);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(212, 175, 55, 0.5);
+            font-style: italic;
+        }
+        
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        /* Responsive */
+        @media (min-width: 640px) {
+            .container {
+                padding: 30px 40px;
+            }
+            
+            .ingredients-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            
+            .stats-section {
+                padding: 20px 30px;
+                gap: 20px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 60px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .ingredients-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+        }
+        
+        @media (max-width: 639px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                margin-bottom: 25px;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .add-ingredient-header-btn {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+            
+            .ingredient-card {
+                padding: 16px;
+            }
+            
+            .ingredient-header {
+                gap: 12px;
+            }
+            
+            .ingredient-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .stats-section {
+                gap: 12px;
+                padding: 12px 15px;
+            }
+            
+            .stats-number {
+                font-size: 1.2rem;
+            }
+            
+            .stats-label {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-left">
+                <a href="#" class="back-button">←</a>
+                <h1 class="page-title">Herbolario Mágico</h1>
+            </div>
+            <button class="add-ingredient-header-btn" id="addIngredientBtn">
+                🌿 Nuevo Ingrediente
+            </button>
+        </header>
+        
+        <section class="search-section">
+            <div class="search-container">
+                <div class="search-icon">🔍</div>
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    placeholder="Busca hierbas, especias, propiedades mágicas..."
+                    id="searchInput"
+                >
+            </div>
+            
+            <div class="filters-section">
+                <div class="filter-chip active" data-filter="all">Todos</div>
+                <div class="filter-chip" data-filter="hierbas">🌿 Hierbas</div>
+                <div class="filter-chip" data-filter="especias">🌶️ Especias</div>
+                <div class="filter-chip" data-filter="raices">🥕 Raíces</div>
+                <div class="filter-chip" data-filter="flores">🌸 Flores</div>
+                <div class="filter-chip" data-filter="frutas">🍎 Frutas</div>
+                <div class="filter-chip" data-filter="semillas">🌰 Semillas</div>
+            </div>
+        </section>
+        
+        <section class="stats-section">
+            <div class="stats-item">
+                <span class="stats-number" id="totalIngredients">24</span>
+                <span class="stats-label">Ingredientes</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-number" id="categoriesCount">6</span>
+                <span class="stats-label">Categorías</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-number" id="recentlyAdded">3</span>
+                <span class="stats-label">Recientes</span>
+            </div>
+        </section>
+        
+        <section class="ingredients-grid" id="ingredientsGrid">
+            <!-- Ingrediente 1 -->
+            <div class="ingredient-card" data-category="especias">
+                <div class="ingredient-actions">
+                    <button class="action-btn" title="Editar">✏️</button>
+                    <button class="action-btn" title="Eliminar">🗑️</button>
+                </div>
+                <div class="ingredient-header">
+                    <div class="ingredient-icon">🧄</div>
+                    <div class="ingredient-info">
+                        <h3 class="ingredient-name">Ajo Silvestre</h3>
+                        <p class="ingredient-scientific">Allium ursinum</p>
+                        <span class="ingredient-type">Especia Protectora</span>
+                    </div>
+                </div>
+                <p class="ingredient-description">
+                    Una hierba poderosa conocida por su capacidad de alejar energías negativas 
+                    y fortalecer el sistema vital. Su aroma penetrante despierta los sentidos.
+                </p>
+                <div class="ingredient-properties">
+                    <span class="property-tag">Protección</span>
+                    <span class="property-tag">Purificación</span>
+                    <span class="property-tag">Fortaleza</span>
+                </div>
+                <p class="ingredient-usage">
+                    Se utiliza en pociones de defensa, ungüentos sanadores y como condimento 
+                    en hechizos culinarios que requieran potencia extra.
+                </p>
+            </div>
+            
+            <!-- Ingrediente 2 -->
+            <div class="ingredient-card" data-category="hierbas">
+                <div class="ingredient-actions">
+                    <button class="action-btn" title="Editar">✏️</button>
+                    <button class="action-btn" title="Eliminar">🗑️</button>
+                </div>
+                <div class="ingredient-header">
+                    <div class="ingredient-icon">🌿</div>
+                    <div class="ingredient-info">
+                        <h3 class="ingredient-name">Salvia Lunar</h3>
+                        <p class="ingredient-scientific">Salvia officinalis</p>
+                        <span class="ingredient-type">Hierba Sagrada</span>
+                    </div>
+                </div>
+                <p class="ingredient-description">
+                    Hierba sagrada que crece bajo la luz de la luna llena. Sus hojas plateadas 
+                    contienen la esencia de la sabiduría ancestral y la claridad mental.
+                </p>
+                <div class="ingredient-properties">
+                    <span class="property-tag">Sabiduría</span>
+                    <span class="property-tag">Claridad</span>
+                    <span class="property-tag">Purificación</span>
+                </div>
+                <p class="ingredient-usage">
+                    Ideal para infusiones de meditación, sahumerios purificadores y como 
+                    condimento en platos que requieran concentración mental.
+                </p>
+            </div>
+            
+            <!-- Ingrediente 3 -->
+            <div class="ingredient-card" data-category="flores">
+                <div class="ingredient-actions">
+                    <button class="action-btn" title="Editar">✏️</button>
+                    <button class="action-btn" title="Eliminar">🗑️</button>
+                </div>
+                <div class="ingredient-header">
+                    <div class="ingredient-icon">🌸</div>
+                    <div class="ingredient-info">
+                        <h3 class="ingredient-name">Pétalos de Rosa Dorada</h3>
+                        <p class="ingredient-scientific">Rosa damascena</p>
+                        <span class="ingredient-type">Flor del Amor</span>
+                    </div>
+                </div>
+                <p class="ingredient-description">
+                    Pétalos delicados que capturan la esencia del amor verdadero. Su fragancia 
+                    embriagadora despierta los sentimientos más puros del corazón.
+                </p>
+                <div class="ingredient-properties">
+                    <span class="property-tag">Amor</span>
+                    <span class="property-tag">Belleza</span>
+                    <span class="property-tag">Armonía</span>
+                </div>
+                <p class="ingredient-usage">
+                    Perfectos para pociones románticas, tés de armonización emocional y 
+                    como decoración comestible en hechizos dulces.
+                </p>
+            </div>
+            
+            <!-- Ingrediente 4 -->
+            <div class="ingredient-card" data-category="raices">
+                <div class="ingredient-actions">
+                    <button class="action-btn" title="Editar">✏️</button>
+                    <button class="action-btn" title="Eliminar">🗑️</button>
+                </div>
+                <div class="ingredient-header">
+                    <div class="ingredient-icon">🥕</div>
+                    <div class="ingredient-info">
+                        <h3 class="ingredient-name">Raíz de Jengibre del Dragón</h3>
+                        <p class="ingredient-scientific">Zingiber draconum</p>
+                        <span class="ingredient-type">Raíz de Fuego</span>
+                    </div>
+                </div>
+                <p class="ingredient-description">
+                    Una raíz ardiente que contiene el fuego primordial de los dragones antiguos. 
+                    Su sabor intenso despierta la pasión y la vitalidad interior.
+                </p>
+                <div class="ingredient-properties">
+                    <span class="property-tag">Fuego</span>
+                    <span class="property-tag">Vitalidad</span>
+                    <span class="property-tag">Pasión</span>
+                </div>
+                <p class="ingredient-usage">
+                    Se utiliza en pociones energizantes, tés digestivos poderosos y como 
+                    especia base en hechizos que requieran calor interno.
+                </p>
+            </div>
+            
+            <!-- Ingrediente 5 -->
+            <div class="ingredient-card" data-category="semillas">
+                <div class="ingredient-actions">
+                    <button class="action-btn" title="Editar">✏️</button>
+                    <button class="action-btn" title="Eliminar">🗑️</button>
+                </div>
+                <div class="ingredient-header">
+                    <div class="ingredient-icon">🌰</div>
+                    <div class="ingredient-info">
+                        <h3 class="ingredient-name">Semillas de Estrella</h3>
+                        <p class="ingredient-scientific">Stellaria mystica</p>
+                        <span class="ingredient-type">Semilla Celestial</span>
+                    </div>
+                </div>
+                <p class="ingredient-description">
+                    Pequeñas semillas que brillan con luz propia bajo la oscuridad. 
+                    Contienen la esencia de las constelaciones y conectan con la magia estelar.
+                </p>
+                <div class="ingredient-properties">
+                    <span class="property-tag">Luz</span>
+                    <span class="property-tag">Conexión</span>
+                    <span class="property-tag">Magia</span>
+                </div>
+                <p class="ingredient-usage">
+                    Perfectas para pociones de iluminación espiritual, panes mágicos
+                </p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

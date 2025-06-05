@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ambrosía - Medidas Disponibles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Crimson Text', serif;
+      background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+      min-height: 100vh;
+      color: #d4af37;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .title {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .measures-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+    }
+
+    .measure-card {
+      background: rgba(212, 175, 55, 0.05);
+      border: 2px solid rgba(212, 175, 55, 0.2);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .measure-card:hover {
+      background: rgba(212, 175, 55, 0.1);
+      border-color: rgba(212, 175, 55, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(212, 175, 55, 0.1);
+    }
+
+    .measure-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .measure-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+    }
+
+    .measure-description {
+      font-size: 0.85rem;
+      color: rgba(212, 175, 55, 0.7);
+      font-style: italic;
+    }
+    .add-measure-btn {
+  display: inline-block;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(184, 134, 11, 0.15));
+  border: 2px solid rgba(212, 175, 55, 0.4);
+  border-radius: 12px;
+  color: #d4af37;
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.add-measure-btn:hover {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(184, 134, 11, 0.2));
+  border-color: rgba(212, 175, 55, 0.6);
+  transform: translateY(-2px);
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">⚖️ Medidas Disponibles</h1>
+    <!-- Botón para agregar nueva medida -->
+<div style="text-align: right; margin-bottom: 20px;">
+  <a href="#" class="add-measure-btn">➕ Agregar Medida</a>
+</div>
+
+    <div class="measures-grid">
+      <div class="measure-card">
+        <div class="measure-icon">🧂</div>
+        <div class="measure-name">Cucharadita</div>
+        <div class="measure-description">5 ml aprox.</div>
+      </div>
+      <div class="measure-card">
+        <div class="measure-icon">🥄</div>
+        <div class="measure-name">Cucharada</div>
+        <div class="measure-description">15 ml aprox.</div>
+      </div>
+      <div class="measure-card">
+        <div class="measure-icon">🍵</div>
+        <div class="measure-name">Taza</div>
+        <div class="measure-description">240 ml aprox.</div>
+      </div>
+      <div class="measure-card">
+        <div class="measure-icon">⚖️</div>
+        <div class="measure-name">Gramos</div>
+        <div class="measure-description">Masa precisa</div>
+      </div>
+      <div class="measure-card">
+        <div class="measure-icon">💧</div>
+        <div class="measure-name">Mililitros</div>
+        <div class="measure-description">Volumen líquido</div>
+      </div>
+      <div class="measure-card">
+        <div class="measure-icon">🧪</div>
+        <div class="measure-name">Pizca</div>
+        <div class="measure-description">Pequeña cantidad</div>
+      </div>
+      <div class="measure-card">
+        <div class="measure-icon">🪄</div>
+        <div class="measure-name">Toque mágico</div>
+        <div class="measure-description">Al gusto del alquimista</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

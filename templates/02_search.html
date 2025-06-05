@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrosía - Buscador</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Textura de pergamino */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1" seed="1"/></filter></defs><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4af37;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        /* Buscador */
+        .search-section {
+            margin-bottom: 30px;
+        }
+        
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            color: #d4af37;
+            font-size: 1rem;
+            font-family: 'Crimson Text', serif;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.6);
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(212, 175, 55, 0.6);
+            font-style: italic;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #d4af37;
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+        
+        /* Filtros rápidos */
+        .quick-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-chip {
+            padding: 8px 16px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            color: #d4af37;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        
+        .filter-chip:hover,
+        .filter-chip.active {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-1px);
+        }
+        
+        .filter-chip.active {
+            background: rgba(212, 175, 55, 0.25);
+            border-color: rgba(212, 175, 55, 0.7);
+        }
+        
+        /* Sugerencias mágicas */
+        .suggestions-section {
+            margin-bottom: 20px;
+        }
+        
+        .suggestions-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+        
+        .suggestion-item {
+            padding: 12px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .suggestion-item:hover {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        /* Resultados */
+        .results-section {
+            flex-grow: 1;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .results-count {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.8);
+            font-style: italic;
+        }
+        
+        .sort-button {
+            padding: 8px 16px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: #d4af37;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sort-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Cards de recetas */
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .recipe-card {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .recipe-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .recipe-card:hover::before {
+            left: 100%;
+        }
+        
+        .recipe-card:hover {
+            border-color: rgba(212, 175, 55, 0.6);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.1) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+        }
+        
+        .recipe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .recipe-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #d4af37;
+            margin-bottom: 5px;
+        }
+        
+        .recipe-category {
+            font-size: 0.85rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+        }
+        
+        .recipe-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        
+        .recipe-tag {
+            padding: 4px 8px;
+            background: rgba(212, 175, 55, 0.15);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #d4af37;
+        }
+        
+        .recipe-description {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+        
+        .recipe-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: rgba(212, 175, 55, 0.6);
+        }
+        
+        .recipe-difficulty {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .difficulty-stars {
+            color: #d4af37;
+        }
+        
+        /* Estado vacío */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(212, 175, 55, 0.6);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .empty-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #d4af37;
+        }
+        
+        .empty-description {
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        /* Responsive */
+        @media (min-width: 640px) {
+            .container {
+                padding: 30px 40px;
+            }
+            
+            .recipe-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            
+            .suggestions-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 60px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 639px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                margin-bottom: 25px;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .recipe-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="#" class="back-button">←</a>
+            <h1 class="page-title">Buscador de Hechizos</h1>
+        </header>
+        
+        <section class="search-section">
+            <div class="search-container">
+                <div class="search-icon">🔍</div>
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    placeholder="Busca por nombre, ingrediente o efecto mágico..."
+                    id="searchInput"
+                >
+            </div>
+            
+            <div class="quick-filters">
+                <div class="filter-chip active" data-filter="all">Todos</div>
+                <div class="filter-chip" data-filter="pociones">Pócimas</div>
+                <div class="filter-chip" data-filter="infusiones">Infusiones</div>
+                <div class="filter-chip" data-filter="dulces">Hechizos Dulces</div>
+                <div class="filter-chip" data-filter="salados">Hechizos Salados</div>
+                <div class="filter-chip" data-filter="favoritos">Favoritos</div>
+            </div>
+        </section>
+        
+        <section class="suggestions-section">
+            <h3 class="suggestions-title">Sugerencias del Oráculo</h3>
+            <div class="suggestions-grid">
+                <div class="suggestion-item">🍯 Miel</div>
+                <div class="suggestion-item">🌿 Hierbas</div>
+                <div class="suggestion-item">🍄 Setas</div>
+                <div class="suggestion-item">🧄 Ajo</div>
+                <div class="suggestion-item">🌶️ Especias</div>
+                <div class="suggestion-item">🥬 Verduras</div>
+            </div>
+        </section>
+        
+        <section class="results-section">
+            <div class="results-header">
+                <span class="results-count">3 hechizos encontrados</span>
+                <button class="sort-button">Ordenar ↕️</button>
+            </div>
+            
+            <div class="recipe-grid">
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <div>
+                            <h3 class="recipe-title">Poción de Calabaza</h3>
+                            <p class="recipe-category">Pócimas Otoñales</p>
+                        </div>
+                    </div>
+                    <div class="recipe-tags">
+                        <span class="recipe-tag">Calabaza</span>
+                        <span class="recipe-tag">Miel</span>
+                        <span class="recipe-tag">Canela</span>
+                    </div>
+                    <p class="recipe-description">
+                        Una poción dorada que despierta los sentidos con el calor del otoño. 
+                        Perfecta para las noches de luna llena.
+                    </p>
+                    <div class="recipe-meta">
+                        <div class="recipe-difficulty">
+                            <span>Dificultad:</span>
+                            <span class="difficulty-stars">⭐⭐</span>
+                        </div>
+                        <span>1h</span>
+                    </div>
+                </div>
+                
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <div>
+                            <h3 class="recipe-title">Sopa de Calabaza</h3>
+                            <p class="recipe-category">Hechizos Nutritivos</p>
+                        </div>
+                    </div>
+                    <div class="recipe-tags">
+                        <span class="recipe-tag">Calabaza</span>
+                        <span class="recipe-tag">Verduras</span>
+                        <span class="recipe-tag">Reconfortante</span>
+                    </div>
+                    <p class="recipe-description">
+                        Un caldo mágico que restaura la energía vital y caldea el alma 
+                        en los días más fríos del invierno.
+                    </p>
+                    <div class="recipe-meta">
+                        <div class="recipe-difficulty">
+                            <span>Dificultad:</span>
+                            <span class="difficulty-stars">⭐</span>
+                        </div>
+                        <span>45min</span>
+                    </div>
+                </div>
+                
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <div>
+                            <h3 class="recipe-title">Estofado de Setas</h3>
+                            <p class="recipe-category">Hechizos del Bosque</p>
+                        </div>
+                    </div>
+                    <div class="recipe-tags">
+                        <span class="recipe-tag">Setas</span>
+                        <span class="recipe-tag">Hierbas</span>
+                        <span class="recipe-tag">Místico</span>
+                    </div>
+                    <p class="recipe-description">
+                        Un guiso ancestral que conecta con la sabiduría del bosque. 
+                        Cada bocado revela secretos de la tierra.
+                    </p>
+                    <div class="recipe-meta">
+                        <div class="recipe-difficulty">
+                            <span>Dificultad:</span>
+                            <span class="difficulty-stars">⭐⭐⭐</span>
+                        </div>
+                        <span>2h</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Funcionalidad básica del buscador
+        const searchInput = document.getElementById('searchInput');
+        const filterChips = document.querySelectorAll('.filter-chip');
+        const suggestionItems = document.querySelectorAll('.suggestion-item');
+        const recipeCards = document.querySelectorAll('.recipe-card');
+        
+        // Manejar filtros
+        filterChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                filterChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                
+                // Aquí iría la lógica de filtrado real
+                console.log('Filtro seleccionado:', chip.dataset.filter);
+            });
+        });
+        
+        // Manejar sugerencias
+        suggestionItems.forEach(item => {
+            item.addEventListener('click', () => {
+                searchInput.value = item.textContent.trim();
+                searchInput.focus();
+                
+                // Aquí iría la lógica de búsqueda
+                console.log('Sugerencia seleccionada:', item.textContent);
+            });
+        });
+        
+        // Manejar búsqueda
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            
+            // Aquí iría la lógica de búsqueda en tiempo real
+            console.log('Buscando:', query);
+        });
+        
+        // Manejar click en recetas
+        recipeCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Aquí iría la navegación a la receta
+                console.log('Receta seleccionada:', card.querySelector('.recipe-title').textContent);
+            });
+        });
+    </script>
+</body>
+</html>

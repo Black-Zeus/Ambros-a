@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrosía - Origen del Grimorio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Textura de pergamino */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1" seed="1"/></filter></defs><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4af37;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        .share-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .share-btn:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(184, 134, 11, 0.2) 100%);
+            border-color: rgba(212, 175, 55, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Introducción heroica */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 50px 30px;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(101, 67, 33, 0.1) 100%);
+            border: 3px solid rgba(139, 69, 19, 0.4);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(139, 69, 19, 0.1), transparent);
+            animation: rotate 25s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hero-icon {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(139, 69, 19, 0.15) 100%);
+            border: 4px solid #d4af37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin: 0 auto 30px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+        }
+        
+        .hero-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: rgba(212, 175, 55, 0.8);
+            font-style: italic;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Timeline del origen */
+        .timeline-section {
+            margin-bottom: 50px;
+        }
+        
+        .timeline-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #d4af37;
+            text-align: center;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, rgba(212, 175, 55, 0.8), rgba(139, 69, 19, 0.5));
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            margin-bottom: 40px;
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .timeline-content {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            width: 45%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-content:hover {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+        }
+        
+        .timeline-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #d4af37, rgba(184, 134, 11, 0.8));
+            border: 3px solid rgba(212, 175, 55, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #2d1810;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .timeline-date {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .timeline-phase {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: #d4af37;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .timeline-description {
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.6;
+        }
+        
+        /* Inspiración y visión */
+        .vision-section {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vision-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .vision-section:hover::before {
+            left: 100%;
+        }
+        
+        .vision-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            color: #d4af37;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .vision-quote {
+            font-size: 1.3rem;
+            color: rgba(212, 175, 55, 0.9);
+            font-style: italic;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .vision-author {
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* El problema que resuelve */
+        .problem-section {
+            background: rgba(139, 69, 19, 0.1);
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            border-radius: 15px;
+            padding: 35px;
+            margin-bottom: 40px;
+        }
+        
+        .problem-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: #d4af37;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .problem-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .problem-item {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .problem-item:hover {
+            background: rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateX(5px);
+        }
+        
+        .problem-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+        
+        .problem-text {
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.5;
+            display: inline;
+        }
+        
+        /* Footer místico */
+        .mystic-footer {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(139, 69, 19, 0.05) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .footer-symbol {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+        
+        .footer-text {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .version-info {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                flex-direction: row !important;
+                padding-left: 80px;
+            }
+            
+            .timeline-content {
+                width: 100%;
+            }
+            
+            .timeline-icon {
+                left: 30px;
+                transform: translateX(-50%);
+            }
+        }
+        
+        @media (max-width: 639px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                margin-bottom: 30px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .header-left {
+                justify-content: center;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .hero-section {
+                padding: 30px 20px;
+            }
+            
+            .hero-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 3rem;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .timeline-title {
+                font-size: 1.5rem;
+            }
+            
+            .timeline-content {
+                padding: 20px;
+            }
+            
+            .timeline-phase {
+                font-size: 1.1rem;
+            }
+            
+            .problem-section {
+                padding: 25px 20px;
+            }
+            
+            .vision-section {
+                padding: 30px 20px;
+            }
+            
+            .vision-quote {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-left">
+                <a href="#" class="back-button">←</a>
+                <h1 class="page-title">Origen del Grimorio</h1>
+            </div>
+            <button class="share-btn" id="shareBtn">
+                📜 Compartir Historia
+            </button>
+        </header>
+        
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-icon">🏛️</div>
+            <h2 class="hero-title">El Origen de Ambrosía</h2>
+            <p class="hero-subtitle">
+                "De la observación de un problema ancestral, nació la visión de un grimorio eterno"
+            </p>
+        </section>
+        
+        <!-- La Visión Original -->
+        <section class="vision-section">
+            <h3 class="vision-title">🔮 La Visión del Druida Fundador</h3>
+            <div class="vision-quote">
+                "Contemplé cómo las recetas de nuestras abuelas se desvanecían como hojas al viento, 
+                y cómo las nuevas generaciones perdían el contacto con la sabiduría gastronómica ancestral. 
+                Era necesario un grimorio que preservara tanto la tradición inmutable como la evolución creativa."
+            </div>
+            <div class="vision-author">— El Druida Fundador, en los albores del proyecto</div>
+        </section>
+        
+        <!-- El Problema que Inspiró la Solución -->
+        <section class="problem-section">
+            <h3 class="problem-title">
+                ⚠️ Los Desafíos Ancestrales
+            </h3>
+            <ul class="problem-list">
+                <li class="problem-item">
+                    <span class="problem-icon">🍃</span>
+                    <span class="problem-text">
+                        <strong>Pérdida de Tradiciones:</strong> Las recetas familiares se transmitían oralmente 
+                        y se perdían cuando fallecían los ancianos sabios de cada familia.
+                    </span>
+                </li>
+                <li class="problem-item">
+                    <span class="problem-icon">📚</span>
+                    <span class="problem-text">
+                        <strong>Fragmentación del Conocimiento:</strong> Los libros de cocina tradicionales 
+                        no permitían la evolución natural de las recetas ni la adaptación a nuevos tiempos.
+                    </span>
+                </li>
+                <li class="problem-item">
+                    <span class="problem-icon">⏰</span>
+                    <span class="problem-text">
+                        <strong>Ritmo de Vida Moderno:</strong> Las nuevas generaciones carecían de tiempo 
+                        y paciencia para aprender las artes culinarias tradicionales.
+                    </span>
+                </li>
+                <li class="problem-item">
+                    <span class="problem-icon">💔</span>
+                    <span class="problem-text">
+                        <strong>Desconexión Cultural:</strong> Los jóvenes perdían el vínculo emocional 
+                        y cultural con las preparaciones que definían su identidad gastronómica.
+                    </span>
+                </li>
+            </ul>
+        </section>
+        
+        <!-- Timeline del Desarrollo -->
+        <section class="timeline-section">
+            <h3 class="timeline-title">
+                ⏳ Cronología de la Creación
+            </h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Principios de 2024</div>
+                        <h4 class="timeline-phase">La Revelación</h4>
+                        <p class="timeline-description">
+                            Durante una cena familiar, el druida fundador observó cómo una receta centenaria 
+                            casi se pierde para siempre. Esa noche nació la idea de crear un grimorio digital 
+                            que preservara tanto la esencia como la evolución de las recetas.
+                        </p>
+                    </div>
+                    <div class="timeline-icon">💡</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Mediados de 2024</div>
+                        <h4 class="timeline-phase">La Investigación</h4>
+                        <p class="timeline-description">
+                            Meses de investigación sobre tradiciones culinarias, entrevistas con ancianos 
+                            cocineros y análisis de las limitaciones de las aplicaciones existentes. 
+                            Se definió la filosofía del "linaje de recetas".
+                        </p>
+                    </div>
+                    <div class="timeline-icon">🔍</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Segundo semestre 2024</div>
+                        <h4 class="timeline-phase">El Diseño Místico</h4>
+                        <p class="timeline-description">
+                            Creación de la identidad visual y experiencial de Ambrosía. Se decidió usar 
+                            una estética que honrara tanto lo ancestral como lo moderno, con referencias 
+                            a grimorios y textos antiguos de sabiduría.
+                        </p>
+                    </div>
+                    <div class="timeline-icon">🎨</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Finales de 2024</div>
+                        <h4 class="timeline-phase">La Alquimia Técnica</h4>
+                        <p class="timeline-description">
+                            Desarrollo de la arquitectura técnica con React Native y SQLite. 
+                            Se implementó el sistema de "recetas de sangre" y variaciones, 
+                            priorizando la funcionalidad offline y la privacidad del usuario.
+                        </p>
+                    </div>
+                    <div class="timeline-icon">⚗️</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Principios de 2025</div>
+                        <h4 class="timeline-phase">Las Primeras Pruebas</h4>
+                        <p class="timeline-description">
+                            Beta testing con un círculo cerrado de cocineros de diferentes generaciones. 
+                            Las abuelas validaron la funcionalidad de preservación, mientras que los 
+                            jóvenes confirmaron la facilidad de uso y adaptación.
+                        </p>
+                    </div>
+                    <div class="timeline-icon">🧪</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Presente</div>
+                        <h4 class="timeline-phase">El Grimorio Viviente</h4>
+                        <p class="timeline-description">
+                            Ambrosía se convierte en realidad: un grimorio culinario que crece 
+                            orgánicamente con cada receta añadida, preservando la sabiduría ancestral 
+                            mientras abraza la innovación creativa de nuevas generaciones.
+                        </p>
+                    </div>
+                    <div class="timeline-icon">🌟</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer místico -->
+        <footer class="mystic-footer">
+            <div class="footer-symbol">📜</div>
+            <div class="footer-text">
+                "Así nació Ambrosía, de la necesidad ancestral de preservar<br>
+                la sabiduría culinaria para las generaciones venideras."
+            </div>
+            <div class="version-info">
+                Historia preservada en el Grimorio Digital<br>
+                Que esta sabiduría perdure por los siglos 🕊️
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // Funcionalidad básica para compartir
+        document.getElementById('shareBtn').addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Ambrosía - Origen del Grimorio',
+                    text: 'Descubre la historia del origen de Ambrosía, el grimorio culinario que preserva la sabiduría ancestral.',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback para navegadores que no soportan Web Share API
+                const text = 'Descubre el origen de Ambrosía - Grimorio Culinario: la historia de cómo nació este proyecto místico.';
+                navigator.clipboard.writeText(`${text} ${window.location.href}`)
+                    .then(() => alert('📜 Historia copiada al pergamino (portapapeles)'))
+                    .catch(() => alert('No se pudo compartir, pero puedes copiar la URL manualmente.'));
+            }
+        });
+        
+        // Animación de aparición para las secciones
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Aplicar animaciones a las secciones
+        document.querySelectorAll('.vision-section, .problem-section, .timeline-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+        
+        // Animación especial para elementos del timeline
+        document.querySelectorAll('.timeline-item').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            item.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>

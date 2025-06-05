@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receta de Ambrosía - {{nombre_receta}}</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Configuración de página para PDF */
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        
+        /* Tipografía */
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #2c1810;
+            background: #fdfcf8;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header del documento */
+        .recipe-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 30px;
+        }
+        
+        .app-logo {
+            font-size: 24px;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        
+        .app-name {
+            font-size: 18px;
+            color: #8b4513;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .recipe-title {
+            font-size: 32px;
+            color: #2c1810;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .recipe-subtitle {
+            font-size: 16px;
+            color: #6b4e3d;
+            font-style: italic;
+        }
+        
+        /* Información básica */
+        .recipe-meta {
+            display: table;
+            width: 100%;
+            margin-bottom: 30px;
+            background: #f8f6f0;
+            border: 2px solid #e8e0d0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .meta-row {
+            display: table-row;
+        }
+        
+        .meta-label {
+            display: table-cell;
+            width: 140px;
+            font-weight: bold;
+            color: #8b4513;
+            padding: 8px 20px 8px 0;
+            vertical-align: top;
+        }
+        
+        .meta-value {
+            display: table-cell;
+            color: #2c1810;
+            padding: 8px 0;
+            vertical-align: top;
+        }
+        
+        /* Descripción */
+        .recipe-description {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #fcfaf5;
+            border-left: 4px solid #d4af37;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .description-title {
+            font-size: 18px;
+            color: #8b4513;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .description-text {
+            color: #2c1810;
+            font-style: italic;
+            line-height: 1.7;
+        }
+        
+        /* Secciones principales */
+        .recipe-section {
+            margin-bottom: 35px;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: #8b4513;
+            margin-bottom: 15px;
+            font-weight: bold;
+            border-bottom: 2px solid #e8e0d0;
+            padding-bottom: 8px;
+        }
+        
+        /* Ingredientes */
+        .ingredients-list {
+            list-style: none;
+            background: #f8f6f0;
+            border: 1px solid #e8e0d0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .ingredient-item {
+            padding: 8px 0;
+            border-bottom: 1px dotted #d0c5b0;
+            display: table;
+            width: 100%;
+        }
+        
+        .ingredient-item:last-child {
+            border-bottom: none;
+        }
+        
+        .ingredient-amount {
+            display: table-cell;
+            width: 120px;
+            font-weight: bold;
+            color: #8b4513;
+            vertical-align: top;
+        }
+        
+        .ingredient-name {
+            display: table-cell;
+            color: #2c1810;
+            vertical-align: top;
+        }
+        
+        /* Instrucciones */
+        .instructions-list {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+        
+        .instruction-item {
+            counter-increment: step-counter;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #fcfaf5;
+            border: 1px solid #e8e0d0;
+            border-radius: 8px;
+            position: relative;
+            padding-left: 70px;
+        }
+        
+        .instruction-item::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            width: 35px;
+            height: 35px;
+            background: #d4af37;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .instruction-text {
+            color: #2c1810;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .instruction-image {
+            width: 250px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid #e8e0d0;
+            margin: 10px auto 0 auto;
+            display: block;
+        }
+        
+        /* Notas y consejos */
+        .recipe-notes {
+            background: #fff8e1;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .notes-title {
+            font-size: 18px;
+            color: #8b4513;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .notes-text {
+            color: #2c1810;
+            line-height: 1.6;
+        }
+        
+        /* Información nutricional - REMOVIDA */
+        
+        /* Tags y categorías */
+        .recipe-tags {
+            margin-bottom: 30px;
+        }
+        
+        .tags-title {
+            font-size: 16px;
+            color: #8b4513;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #f0e6d2;
+            color: #6b4e3d;
+            padding: 4px 12px;
+            margin: 2px 4px 2px 0;
+            border-radius: 15px;
+            font-size: 14px;
+            border: 1px solid #d4af37;
+        }
+        
+        /* Footer */
+        .recipe-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e8e0d0;
+            color: #6b4e3d;
+            font-style: italic;
+        }
+        
+        .footer-text {
+            margin-bottom: 5px;
+        }
+        
+        .footer-date {
+            font-size: 14px;
+            color: #8b8680;
+        }
+        
+        /* Estilos para elementos opcionales */
+        .recipe-image {
+            width: 400px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 20px auto;
+            display: block;
+            border: 3px solid #e8e0d0;
+        }
+        
+        .prep-time-grid {
+            display: table;
+            width: 100%;
+        }
+        
+        .prep-time-row {
+            display: table-row;
+        }
+        
+        .prep-time-cell {
+            display: table-cell;
+            width: 33.33%;
+            text-align: center;
+            padding: 15px 10px;
+            background: #f8f6f0;
+            border: 1px solid #e8e0d0;
+        }
+        
+        .prep-time-cell:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+        
+        .prep-time-cell:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .time-label {
+            display: block;
+            font-size: 12px;
+            color: #8b4513;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        
+        .time-value {
+            font-size: 16px;
+            color: #2c1810;
+            font-weight: bold;
+        }
+        
+        /* Responsive para pantallas pequeñas */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .recipe-title {
+                font-size: 24px;
+            }
+            
+            .section-title {
+                font-size: 18px;
+            }
+            
+            .meta-label,
+            .meta-value {
+                display: block;
+                width: 100%;
+                padding: 4px 0;
+            }
+            
+            .meta-label {
+                font-weight: bold;
+                margin-top: 10px;
+            }
+            
+            .ingredient-amount,
+            .ingredient-name {
+                display: block;
+                width: 100%;
+            }
+            
+            .ingredient-amount {
+                font-weight: bold;
+                margin-bottom: 2px;
+            }
+            
+            .prep-time-cell {
+                display: block;
+                width: 100%;
+                border-radius: 0;
+                text-align: left;
+            }
+            
+            .prep-time-cell:first-child {
+                border-radius: 8px 8px 0 0;
+            }
+            
+            .recipe-image {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+            }
+            
+            .instruction-image {
+                width: 220px;
+                height: 140px;
+                object-fit: cover;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header del documento -->
+    <header class="recipe-header">
+        <div class="app-logo">🧙‍♂️ ✨</div>
+        <div class="app-name">Ambrosía - Grimorio Culinario</div>
+        <h1 class="recipe-title">Panqueques Esponjosos de la Abuela</h1>
+        <p class="recipe-subtitle">Un hechizo matutino que despierta sonrisas y llena corazones</p>
+    </header>
+    
+    <!-- Imagen de la receta -->
+    <img src="https://placehold.co/400x250/d4af37/2c1810?text=Panqueques+Dorados" alt="Panqueques Esponjosos de la Abuela" class="recipe-image">
+    
+    <!-- Información básica -->
+    <section class="recipe-meta">
+        <div class="meta-row">
+            <div class="meta-label">Categoría:</div>
+            <div class="meta-value">🍞 Masas y Panadería</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">Porciones:</div>
+            <div class="meta-value">4 personas (12-16 panqueques)</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">Dificultad:</div>
+            <div class="meta-value">⭐⭐ Principiante</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">Origen:</div>
+            <div class="meta-value">Receta de sangre - Tradición familiar</div>
+        </div>
+    </section>
+    
+    <!-- Tiempos de preparación -->
+    <section class="recipe-section">
+        <div class="prep-time-grid">
+            <div class="prep-time-row">
+                <div class="prep-time-cell">
+                    <span class="time-label">Preparación</span>
+                    <span class="time-value">15 min</span>
+                </div>
+                <div class="prep-time-cell">
+                    <span class="time-label">Cocción</span>
+                    <span class="time-value">20 min</span>
+                </div>
+                <div class="prep-time-cell">
+                    <span class="time-label">Total</span>
+                    <span class="time-value">35 min</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Descripción -->
+    <section class="recipe-description">
+        <h2 class="description-title">Historia del Hechizo</h2>
+        <p class="description-text">Esta receta ancestral ha pasado de generación en generación, guardando los secretos para lograr panqueques perfectamente esponjosos y dorados. El truco está en no sobremezclar la masa y dejar que repose para que la harina se hidrate completamente. Cada bocado es un abrazo cálido que transporta a las mañanas de domingo en casa de la abuela.</p>
+    </section>
+    
+    <!-- Ingredientes -->
+    <section class="recipe-section">
+        <h2 class="section-title">🌿 Ingredientes Mágicos</h2>
+        <ul class="ingredients-list">
+            <li class="ingredient-item">
+                <span class="ingredient-amount">2 tazas</span>
+                <span class="ingredient-name">Harina de trigo (todo uso)</span>
+            </li>
+            <li class="ingredient-item">
+                <span class="ingredient-amount">3 unidades</span>
+                <span class="ingredient-name">Huevos frescos de campo</span>
+            </li>
+            <li class="ingredient-item">
+                <span class="ingredient-amount">1¾ tazas</span>
+                <span class="ingredient-name">Leche entera</span>
+            </li>
+            <li class="ingredient-item">
+                <span class="ingredient-amount">3 cdas.</span>
+                <span class="ingredient-name">Mantequilla derretida</span>
+            </li>
+            <li class="ingredient-item">
+                <span class="ingredient-amount">2 cdas.</span>
+                <span class="ingredient-name">Azúcar blanca</span>
+            </li>
+            <li class="ingredient-item">
+                <span class="ingredient-amount">2 cdtas.</span>
+                <span class="ingredient-name">Polvo de hornear</span>
+            </li>
+            <li class="ingredient-item">
+                <span class="ingredient-amount">1/2 cdta.</span>
+                <span class="ingredient-name">Sal marina fina</span>
+            </li>
+            <li class="ingredient-item">
+                <span class="ingredient-amount">1 cdta.</span>
+                <span class="ingredient-name">Esencia de vainilla</span>
+            </li>
+            <li class="ingredient-item">
+                <span class="ingredient-amount">c/n</span>
+                <span class="ingredient-name">Mantequilla para la sartén</span>
+            </li>
+        </ul>
+    </section>
+    
+    <!-- Instrucciones -->
+    <section class="recipe-section">
+        <h2 class="section-title">🔥 Ritual de Preparación</h2>
+        <ol class="instructions-list">
+            <li class="instruction-item">
+                <div class="instruction-text">En un bowl grande, tamiza la harina junto con el polvo de hornear, azúcar y sal. Crea un pequeño volcán en el centro donde depositarás los ingredientes húmedos. Este paso es crucial para evitar grumos en la masa final.</div>
+                <img src="https://placehold.co/250x160/f8f6f0/8b4513?text=Harina+Tamizada" alt="Paso 1: Tamizar ingredientes secos" class="instruction-image">
+            </li>
+            <li class="instruction-item">
+                <div class="instruction-text">En otro recipiente, bate los huevos hasta que estén bien integrados y espumosos. Añade la leche, mantequilla derretida (tibia, no caliente) y la esencia de vainilla. Mezcla suavemente hasta obtener una mezcla homogénea.</div>
+                <img src="https://placehold.co/250x160/fcfaf5/8b4513?text=Mezcla+Húmeda" alt="Paso 2: Preparar ingredientes húmedos" class="instruction-image">
+            </li>
+            <li class="instruction-item">
+                <div class="instruction-text">Vierte la mezcla húmeda en el centro del volcán de harina. Con movimientos envolventes y suaves, integra todos los ingredientes hasta formar una masa ligeramente grumosa. ¡NO sobremezcles! Es normal que queden algunos pequeños grumos.</div>
+                <img src="https://placehold.co/250x160/fff8e1/8b4513?text=Masa+Integrada" alt="Paso 3: Integrar ingredientes" class="instruction-image">
+            </li>
+            <li class="instruction-item">
+                <div class="instruction-text">Deja reposar la masa durante 5-10 minutos tapada con un paño húmedo. Este tiempo de reposo permite que la harina se hidrate completamente y el polvo de hornear comience a activarse, garantizando panqueques más esponjosos.</div>
+                <img src="https://placehold.co/250x160/f0f8f0/8b4513?text=Masa+en+Reposo" alt="Paso 4: Reposo de la masa" class="instruction-image">
+            </li>
+            <li class="instruction-item">
+                <div class="instruction-text">Calienta una sartén o plancha a fuego medio-bajo. Unta ligeramente con mantequilla. Vierte 1/4 de taza de masa por panqueque, dejando espacio entre cada uno. Cocina hasta que se formen burbujas en la superficie y los bordes se vean secos (2-3 minutos).</div>
+                <img src="https://placehold.co/250x160/d4af37/2c1810?text=Primera+Cocción" alt="Paso 5: Primera cocción" class="instruction-image">
+            </li>
+            <li class="instruction-item">
+                <div class="instruction-text">Voltea cuidadosamente con una espátula ancha y cocina del otro lado hasta que esté dorado (1-2 minutos más). Los panqueques perfectos deben tener un color dorado uniforme y una textura esponjosa al tacto.</div>
+                <img src="https://placehold.co/250x160/8b4513/fff?text=Panqueques+Dorados" alt="Paso 6: Voltear y terminar cocción" class="instruction-image">
+            </li>
+            <li class="instruction-item">
+                <div class="instruction-text">Sirve inmediatamente apilados en platos calientes. Acompaña con mantequilla, miel, maple syrup, frutas frescas o el topping de tu preferencia. ¡El secreto está en servirlos recién hechos!</div>
+                <img src="https://placehold.co/250x160/2c1810/d4af37?text=Servir+Calientes" alt="Paso 7: Presentación final" class="instruction-image">
+            </li>
+        </ol>
+    </section>
+    
+    <!-- Notas y consejos -->
+    <section class="recipe-notes">
+        <h3 class="notes-title">💡 Secretos del Druida</h3>
+        <p class="notes-text">
+            <strong>Temperatura perfecta:</strong> La sartén debe estar a temperatura media. Si está muy caliente, se dorarán por fuera pero quedarán crudos por dentro.<br><br>
+            <strong>Mantequilla vs aceite:</strong> La mantequilla da mejor sabor, pero si se quema, limpia la sartén y agrega un poco más.<br><br>
+            <strong>Mantenimiento del calor:</strong> Puedes mantener los panqueques calientes en el horno a 80°C mientras terminas de cocinar el resto.<br><br>
+            <strong>Variaciones mágicas:</strong> Agrega chispas de chocolate, arándanos frescos o un toque de canela a la masa para crear nuevas versiones del hechizo.
+        </p>
+    </section>
+    
+    <!-- Información nutricional - REMOVIDA -->
+    
+    <!-- Tags y categorías -->
+    <section class="recipe-tags">
+        <h3 class="tags-title">🏷️ Etiquetas Místicas</h3>
+        <span class="tag">Desayuno</span>
+        <span class="tag">Vegetariano</span>
+        <span class="tag">Familiar</span>
+        <span class="tag">Fin de semana</span>
+        <span class="tag">Tradición</span>
+        <span class="tag">Comfort food</span>
+        <span class="tag">Receta de sangre</span>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="recipe-footer">
+        <p class="footer-text">"Que cada ingrediente sea una bendición y cada bocado una celebración"</p>
+        <p class="footer-date">Generado desde Ambrosía el 4 de Junio, 2025</p>
+    </footer>
+</body>
+</html>

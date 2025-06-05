@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ambrosía - Nuevo Ingrediente</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Crimson Text', serif;
+      background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+      min-height: 100vh;
+      color: #d4af37;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(212, 175, 55, 0.03);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 16px;
+      padding: 30px;
+    }
+
+    .title {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      margin-bottom: 25px;
+      text-align: center;
+      color: #d4af37;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 6px;
+      font-family: 'Cinzel', serif;
+      font-weight: 500;
+      color: #d4af37;
+    }
+
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid rgba(212, 175, 55, 0.3);
+      border-radius: 8px;
+      background: rgba(212, 175, 55, 0.05);
+      color: #d4af37;
+      font-family: 'Crimson Text', serif;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: rgba(212, 175, 55, 0.6);
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(184, 134, 11, 0.15));
+      border: 2px solid rgba(212, 175, 55, 0.4);
+      border-radius: 10px;
+      color: #d4af37;
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(184, 134, 11, 0.2));
+      border-color: rgba(212, 175, 55, 0.6);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">🌿 Registrar Nuevo Ingrediente</h1>
+    <form id="formNuevoIngrediente">
+      <div class="form-group">
+        <label class="form-label" for="icono">Icono (emoji)</label>
+        <input class="form-input" type="text" id="icono" placeholder="Ej: 🌿, 🧄, 🌸" maxlength="2"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="nombre">Nombre común</label>
+        <input class="form-input" type="text" id="nombre" placeholder="Ej: Salvia Lunar"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="cientifico">Nombre científico</label>
+        <input class="form-input" type="text" id="cientifico" placeholder="Ej: Salvia officinalis"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="tipo">Tipo o clasificación</label>
+        <input class="form-input" type="text" id="tipo" placeholder="Ej: Hierba Sagrada"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="categoria">Categoría</label>
+        <select class="form-select" id="categoria">
+          <option value="hierbas">🌿 Hierbas</option>
+          <option value="especias">🌶️ Especias</option>
+          <option value="raices">🥕 Raíces</option>
+          <option value="flores">🌸 Flores</option>
+          <option value="frutas">🍎 Frutas</option>
+          <option value="semillas">🌰 Semillas</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="descripcion">Descripción mágica</label>
+        <textarea class="form-textarea" id="descripcion" placeholder="Ej: Hierba sagrada que crece bajo la luz de la luna..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="propiedades">Propiedades (separadas por coma)</label>
+        <input class="form-input" type="text" id="propiedades" placeholder="Ej: Claridad, Purificación, Sabiduría"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="usos">Usos</label>
+        <textarea class="form-textarea" id="usos" placeholder="Ej: Infusiones, sahumerios, condimentos mágicos..."></textarea>
+      </div>
+
+      <button class="submit-btn" type="submit">✨ Guardar Ingrediente</button>
+    </form>
+  </div>
+</body>
+</html>

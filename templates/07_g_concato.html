@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrosía - Contactar al Druida</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Textura de pergamino */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1" seed="1"/></filter></defs><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4af37;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        /* Introducción */
+        .intro-section {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(101, 67, 33, 0.1) 100%);
+            border: 3px solid rgba(139, 69, 19, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .intro-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .intro-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .intro-text {
+            font-size: 1.1rem;
+            color: rgba(212, 175, 55, 0.9);
+            line-height: 1.7;
+            font-style: italic;
+        }
+        
+        .intro-text .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        /* Formulario de contacto */
+        .contact-form-section {
+            background: rgba(212, 175, 55, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .contact-form-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212, 175, 55, 0.05), transparent);
+            animation: rotate 40s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        
+        .form-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: #d4af37;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .contact-form {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: #d4af37;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            padding: 15px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            color: #d4af37;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(212, 175, 55, 0.12);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+        
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: rgba(212, 175, 55, 0.5);
+            font-style: italic;
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-select {
+            cursor: pointer;
+        }
+        
+        .form-select option {
+            background: #1a0f0a;
+            color: #d4af37;
+        }
+        
+        .submit-button {
+            padding: 18px 30px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 15px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .submit-button:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(184, 134, 11, 0.2) 100%);
+            border-color: rgba(212, 175, 55, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+        }
+        
+        .submit-button:active {
+            transform: translateY(0);
+        }
+        
+        /* Métodos alternativos */
+        .alternative-methods {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .methods-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .method-item {
+            background: rgba(212, 175, 55, 0.06);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .method-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.08), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .method-item:hover::before {
+            left: 100%;
+        }
+        
+        .method-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15);
+        }
+        
+        .method-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .method-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        
+        .method-info {
+            flex: 1;
+        }
+        
+        .method-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #d4af37;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .method-description {
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Expectativas de respuesta */
+        .response-info {
+            background: rgba(139, 69, 19, 0.1);
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .response-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .response-text {
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.6;
+        }
+        
+        /* Footer místico */
+        .contact-footer {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(139, 69, 19, 0.05) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+        }
+        
+        .footer-quote {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: #d4af37;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .footer-signature {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+        }
+        
+        /* Estados del formulario */
+        .form-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            color: rgba(34, 197, 94, 0.9);
+        }
+        
+        .form-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            color: rgba(239, 68, 68, 0.9);
+        }
+        
+        /* Responsive */
+        @media (min-width: 640px) {
+            .container {
+                padding: 30px 40px;
+            }
+            
+            .methods-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 60px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .intro-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 639px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                margin-bottom: 30px;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .intro-section {
+                padding: 25px 20px;
+            }
+            
+            .intro-title {
+                font-size: 1.5rem;
+            }
+            
+            .intro-text {
+                font-size: 1rem;
+            }
+            
+            .contact-form-section {
+                padding: 25px 20px;
+            }
+            
+            .method-item {
+                padding: 20px;
+            }
+            
+            .method-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="#" class="back-button">←</a>
+            <h1 class="page-title">Contactar al Druida</h1>
+        </header>
+        
+        <!-- Introducción -->
+        <section class="intro-section">
+            <div class="intro-icon">📧</div>
+            <h2 class="intro-title">Invocación de Comunicación</h2>
+            <div class="intro-text">
+                ¿Tienes una <span class="highlight">consulta mágica</span> sobre el grimorio? 
+                ¿Deseas compartir una <span class="highlight">sugerencia ancestral</span> 
+                o reportar un comportamiento inesperado en los hechizos culinarios?
+                <br><br>
+                El druida está siempre dispuesto a escuchar la <span class="highlight">sabiduría de la comunidad</span> 
+                y a colaborar en la evolución continua de Ambrosía.
+            </div>
+        </section>
+        
+        <!-- Formulario de contacto -->
+        <section class="contact-form-section">
+            <h3 class="form-title">
+                🌟 Pergamino de Comunicación
+            </h3>
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <label class="form-label" for="name">
+                        👤 Nombre del Druida
+                    </label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        class="form-input" 
+                        placeholder="¿Cómo prefieres que te llame?"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="email">
+                        📮 Correo del Pergamino
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="tu.nombre@grimorio.com"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="category">
+                        🏷️ Tipo de Consulta
+                    </label>
+                    <select id="category" name="category" class="form-select" required>
+                        <option value="">Selecciona el propósito de tu mensaje...</option>
+                        <option value="suggestion">💡 Sugerencia de Mejora</option>
+                        <option value="bug">🐛 Reporte de Comportamiento Extraño</option>
+                        <option value="recipe">🍳 Consulta sobre Recetas</option>
+                        <option value="collaboration">🤝 Propuesta de Colaboración</option>
+                        <option value="feedback">💬 Comentarios Generales</option>
+                        <option value="other">🌙 Otro Asunto Místico</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="subject">
+                        📋 Asunto del Hechizo
+                    </label>
+                    <input 
+                        type="text" 
+                        id="subject" 
+                        name="subject" 
+                        class="form-input" 
+                        placeholder="Resume tu consulta en una línea mágica"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="message">
+                        📜 Mensaje Ancestral
+                    </label>
+                    <textarea 
+                        id="message" 
+                        name="message" 
+                        class="form-textarea" 
+                        placeholder="Comparte tu sabiduría, consulta o sugerencia con todo el detalle que consideres necesario..."
+                        required
+                    ></textarea>
+                </div>
+                
+                <button type="submit" class="submit-button">
+                    🦉 Enviar Mensaje al Druida
+                </button>
+            </form>
+        </section>
+        
+        <!-- Métodos alternativos -->
+        <section class="alternative-methods">
+            <h3 class="section-title">
+                🌐 Canales Alternativos de Comunicación
+            </h3>
+            <div class="methods-grid">
+                <div class="method-item" onclick="openGitHub()">
+                    <div class="method-header">
+                        <div class="method-icon">💻</div>
+                        <div class="method-info">
+                            <div class="method-name">GitHub Issues</div>
+                        </div>
+                    </div>
+                    <div class="method-description">
+                        Para reportes técnicos detallados, sugerencias de funcionalidades 
+                        o contribuciones al código del grimorio.
+                    </div>
+                </div>                
+            </div>
+        </section>
+        
+        <!-- Expectativas de respuesta -->
+        <section class="response-info">
+            <h3 class="response-title">
+                ⏰ Paciencia
+            </h3>
+            <div class="response-text">
+                El druida revisa los pergaminos regularmente, debes ser paciente...
+                <br><br>
+                <em>Recuerda: La paciencia es una virtud druídica, y las mejores respuestas 
+                requieren tiempo para fermentar como un buen vino.</em>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="contact-footer">
+            <div class="footer-quote">
+                "Cada mensaje es una semilla de sabiduría que puede florecer 
+                en mejoras para toda la comunidad"
+            </div>
+            <div class="footer-signature">
+                — El Druida Guardián de Ambrosía
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // Manejo del formulario de contacto
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulación de envío (aquí iría la lógica real de envío)
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            console.log('Datos del formulario:', data);
+            
+            // Mostrar mensaje de éxito
+            showSuccessMessage();
+            
+            // Limpiar formulario
+            this.reset();
+        });
+        
+        function showSuccessMessage() {
+            // Remover mensajes previos
+            const existingMessages = document.querySelectorAll('.form-success, .form-error');
+            existingMessages.forEach(msg => msg.remove());
+            
+            // Crear mensaje de éxito
+            const successDiv = document.createElement('div');
+            successDiv.className = 'form-success';
+            successDiv.innerHTML = `
+                <div style="font-size: 1.5rem; margin-bottom: 10px;">🌟</div>
+                <div style="font-family: 'Cinzel', serif; font-size: 1.1rem; margin-bottom: 8px;">
+                    ¡Mensaje Enviado con Éxito!
+                </div>
+                <div style="font-size: 0.9rem; opacity: 0.8;">
+                    Tu pergamino ha llegado al druida. Recibirás una respuesta pronto.
+                </div>
+            `;
+            
+            // Insertar después del formulario
+            const formSection = document.querySelector('.contact-form-section');
+            formSection.appendChild(successDiv);
+            
+            // Scroll suave al mensaje
+            successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Remover el mensaje después de 5 segundos
+            setTimeout(() => {
+                successDiv.style.transition = 'opacity 0.5s ease';
+                successDiv.style.opacity = '0';
+                setTimeout(() => successDiv.remove(), 500);
+            }, 5000);
+        }
+        
+        // Funciones para métodos alternativos
+        function openGitHub() {
+            alert('🔗 Abriendo GitHub Issues\n\nAquí se abriría el repositorio de GitHub del proyecto para reportes técnicos.');
+            // window.open('https://github.com/tu-usuario/ambrosia/issues', '_blank');
+        }
+        
+        function openSocial() {
+            alert('🐦 Redes Sociales\n\nAquí se abrirían los enlaces a las redes sociales oficiales de Ambrosía.');
+            // window.open('https://twitter.com/ambrosia_app', '_blank');
+        }
+        
+        // Validación en tiempo real
+        const inputs = document.querySelectorAll('.form-input, .form-textarea, .form-select');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.required && !this.value.trim()) {
+                    this.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                } else {
+                    this.style.borderColor = 'rgba(212, 175, 55, 0.2)';
+                }
+            });
+            
+            input.addEventListener('input', function() {
+                if (this.style.borderColor === 'rgba(239, 68, 68, 0.5)' && this.value.trim()) {
+                    this.style.borderColor = 'rgba(212, 175, 55, 0.2)';
+                }
+            });
+        });
+        
+        // Animación de aparición para las secciones
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Aplicar animaciones a las secciones
+        document.querySelectorAll('.contact-form-section, .alternative-methods, .response-info').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

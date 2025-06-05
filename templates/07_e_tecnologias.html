@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrosía - Tecnologías Mágicas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Textura de pergamino */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1" seed="1"/></filter></defs><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4af37;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        /* Introducción de tecnologías */
+        .tech-intro {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(101, 67, 33, 0.1) 100%);
+            border: 3px solid rgba(139, 69, 19, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tech-intro-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .tech-intro-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .tech-intro-text {
+            font-size: 1.1rem;
+            color: rgba(212, 175, 55, 0.9);
+            line-height: 1.7;
+            font-style: italic;
+        }
+        
+        .tech-intro-text .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        /* Categorías de tecnologías */
+        .tech-categories {
+            margin-bottom: 40px;
+        }
+        
+        .category {
+            margin-bottom: 35px;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 2px solid rgba(212, 175, 55, 0.25);
+            border-radius: 15px;
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            color: #d4af37;
+        }
+        
+        .category-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .tech-item {
+            background: rgba(212, 175, 55, 0.06);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tech-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.08), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .tech-item:hover::before {
+            left: 100%;
+        }
+        
+        .tech-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15);
+        }
+        
+        .tech-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tech-logo {
+            width: 40px;
+            height: 40px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .tech-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: #d4af37;
+            font-weight: 600;
+        }
+        
+        .tech-description {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 10px;
+        }
+        
+        .tech-purpose {
+            font-size: 0.85rem;
+            color: rgba(212, 175, 55, 0.6);
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Arquitectura mágica */
+        .architecture-section {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .architecture-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212, 175, 55, 0.05), transparent);
+            animation: rotate 40s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        
+        .architecture-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .architecture-description {
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.6;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Footer místico */
+        .tech-footer {
+            text-align: center;
+            padding: 25px;
+            background: rgba(139, 69, 19, 0.1);
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .footer-quote {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: #d4af37;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .footer-attribution {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+        }
+        
+        /* Responsive */
+        @media (min-width: 640px) {
+            .container {
+                padding: 30px 40px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 60px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .tech-intro-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 639px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                margin-bottom: 30px;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .tech-intro {
+                padding: 25px 20px;
+            }
+            
+            .tech-intro-title {
+                font-size: 1.5rem;
+            }
+            
+            .tech-intro-text {
+                font-size: 1rem;
+            }
+            
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .category-title {
+                font-size: 1.2rem;
+            }
+            
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tech-item {
+                padding: 18px;
+            }
+            
+            .architecture-section {
+                padding: 25px 20px;
+            }
+            
+            .architecture-title {
+                flex-direction: column;
+                gap: 5px;
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="#" class="back-button">←</a>
+            <h1 class="page-title">Tecnologías Mágicas</h1>
+        </header>
+        
+        <!-- Introducción tecnológica -->
+        <section class="tech-intro">
+            <div class="tech-intro-icon">⚙️</div>
+            <h2 class="tech-intro-title">Las Artes Técnicas del Grimorio</h2>
+            <div class="tech-intro-text">
+                Como todo verdadero grimorio, Ambrosía está forjado con <span class="highlight">artes técnicas ancestrales</span> 
+                y <span class="highlight">hechizos modernos</span>. Cada tecnología ha sido cuidadosamente elegida 
+                por su pureza, simplicidad y respeto por la experiencia del druida cocinero.
+                <br><br>
+                Rechazamos la complejidad innecesaria en favor de <span class="highlight">soluciones elegantes</span> 
+                que honran tanto la tradición como la innovación.
+            </div>
+        </section>
+        
+        <!-- Categorías de tecnologías -->
+        <section class="tech-categories">
+            <!-- Núcleo & Manifestación -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">📱</div>
+                    <h3 class="category-title">Núcleo & Manifestación</h3>
+                </div>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <div class="tech-header">
+                            <div class="tech-logo">⚛️</div>
+                            <div class="tech-name">React Native</div>
+                        </div>
+                        <div class="tech-description">
+                            El corazón alquímico que da vida al grimorio en dispositivos móviles.
+                        </div>
+                        <div class="tech-purpose">
+                            Framework principal para aplicaciones nativas
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-header">
+                            <div class="tech-logo">⚡</div>
+                            <div class="tech-name">Expo</div>
+                        </div>
+                        <div class="tech-description">
+                            La plataforma que acelera el desarrollo y distribuye la magia culinaria.
+                        </div>
+                        <div class="tech-purpose">
+                            Desarrollo rápido y distribución multiplataforma
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-header">
+                            <div class="tech-logo">🎨</div>
+                            <div class="tech-name">Design System</div>
+                        </div>
+                        <div class="tech-description">
+                            Los principios estéticos que unifican la experiencia visual del druida.
+                        </div>
+                        <div class="tech-purpose">
+                            Consistencia visual y componentes reutilizables
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Experiencia & Ritual -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">🌙</div>
+                    <h3 class="category-title">Experiencia & Ritual</h3>
+                </div>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <div class="tech-header">
+                            <div class="tech-logo">🔒</div>
+                            <div class="tech-name">Offline First</div>
+                        </div>
+                        <div class="tech-description">
+                            El grimorio funciona sin conexión, preservando tus recetas en cualquier lugar.
+                        </div>
+                        <div class="tech-purpose">
+                            Disponibilidad total sin dependencia de internet
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-header">
+                            <div class="tech-logo">🌙</div>
+                            <div class="tech-name">Dark Magic</div>
+                        </div>
+                        <div class="tech-description">
+                            Interfaz oscura que protege los ojos del druida durante rituales nocturnos.
+                        </div>
+                        <div class="tech-purpose">
+                            Modo oscuro optimizado y experiencia inmersiva
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-header">
+                            <div class="tech-logo">📱</div>
+                            <div class="tech-name">Native Performance</div>
+                        </div>
+                        <div class="tech-description">
+                            Fluidez nativa que hace que cada interacción se sienta como magia real.
+                        </div>
+                        <div class="tech-purpose">
+                            Rendimiento optimizado para dispositivos móviles
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Persistencia & Sabiduría -->
+            <div class="category">
+                <div class="category-header">
+                    <div class="category-icon">🏰</div>
+                    <h3 class="category-title">Persistencia & Sabiduría</h3>
+                </div>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <div class="tech-header">
+                            <div class="tech-logo">💾</div>
+                            <div class="tech-name">SQLite</div>
+                        </div>
+                        <div class="tech-description">
+                            Base de datos local que preserva cada receta como un pergamino eterno.
+                        </div>
+                        <div class="tech-purpose">
+                            Almacenamiento robusto y consultas eficientes
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-header">
+                            <div class="tech-logo">🗂️</div>
+                            <div class="tech-name">Estado Inmutable</div>
+                        </div>
+                        <div class="tech-description">
+                            Gestión predictible del estado que mantiene la coherencia del grimorio.
+                        </div>
+                        <div class="tech-purpose">
+                            Arquitectura Redux/Context para estado global
+                        </div>
+                    </div>
+                    
+                    <div class="tech-item">
+                        <div class="tech-header">
+                            <div class="tech-logo">🔄</div>
+                            <div class="tech-name">Version Control</div>
+                        </div>
+                        <div class="tech-description">
+                            Seguimiento de cada evolución del grimorio, como un verdadero linaje.
+                        </div>
+                        <div class="tech-purpose">
+                            Git para control de versiones y colaboración
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Arquitectura general -->
+        <section class="architecture-section">
+            <h3 class="architecture-title">
+                🏗️ Arquitectura del Grimorio
+            </h3>
+            <div class="architecture-description">
+                Ambrosía sigue una <strong>arquitectura móvil nativa</strong> con React Native como núcleo, 
+                potenciada por Expo para desarrollo ágil y SQLite para persistencia confiable. 
+                Priorizamos la <strong>experiencia offline</strong> sobre la dependencia de conexión, 
+                la <strong>fluidez nativa</strong> sobre las soluciones híbridas, 
+                y el <strong>almacenamiento local</strong> sobre la dependencia de servidores externos.
+                <br><br>
+                Como un verdadero grimorio portátil, está diseñado para <strong>funcionar en soledad</strong> 
+                mientras permite <strong>sincronización opcional</strong> cuando el druida así lo desee.
+            </div>
+        </section>
+        
+        <!-- Footer tecnológico -->
+        <footer class="tech-footer">
+            <div class="footer-quote">
+                "La verdadera magia no está en la complejidad de los hechizos, 
+                sino en la elegancia de su simplicidad"
+            </div>
+            <div class="footer-attribution">
+                — Código del Druida Arquitecto
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

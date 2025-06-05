@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrosía - El Druida</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Textura de pergamino */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1" seed="1"/></filter></defs><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4af37;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+        
+        .share-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 134, 11, 0.15) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .share-btn:hover {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(184, 134, 11, 0.2) 100%);
+            border-color: rgba(212, 175, 55, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Introducción mística */
+        .intro-section {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .intro-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        
+        .druida-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.3) 0%, rgba(212, 175, 55, 0.2) 100%);
+            border: 4px solid #d4af37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 25px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+        
+        .intro-text {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #d4af37;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .intro-subtitle {
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.8);
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Secciones de contenido */
+        .content-section {
+            margin-bottom: 40px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .content-section:hover::before {
+            left: 100%;
+        }
+        
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-content {
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.8);
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-content p {
+            margin-bottom: 15px;
+        }
+        
+        .section-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Manifesto especial */
+        .manifesto-section {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(101, 67, 33, 0.1) 100%);
+            border: 3px solid rgba(139, 69, 19, 0.4);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 40px;
+            position: relative;
+            text-align: center;
+        }
+        
+        .manifesto-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #d4af37;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .manifesto-text {
+            font-size: 1.1rem;
+            color: rgba(212, 175, 55, 0.9);
+            line-height: 1.8;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        .manifesto-text .highlight {
+            color: #d4af37;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Principios del grimorio */
+        .principles-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .principle-item {
+            background: rgba(212, 175, 55, 0.08);
+            border: 2px solid rgba(212, 175, 55, 0.25);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .principle-item:hover {
+            background: rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
+        }
+        
+        .principle-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .principle-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        
+        .principle-description {
+            font-size: 0.95rem;
+            color: rgba(212, 175, 55, 0.7);
+            line-height: 1.5;
+        }
+        
+        /* Tecnologías y créditos */
+        .tech-section {
+            background: rgba(139, 69, 19, 0.1);
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .tech-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .tech-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .tech-name {
+            font-size: 0.85rem;
+            color: rgba(212, 175, 55, 0.8);
+            font-weight: 500;
+        }
+        
+        /* Footer místico */
+        .mystic-footer {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(139, 69, 19, 0.05) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .footer-symbol {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+        
+        .footer-text {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .version-info {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Responsive */
+        @media (min-width: 640px) {
+            .container {
+                padding: 30px 40px;
+            }
+            
+            .principles-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+            
+            .tech-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 60px;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .principles-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 639px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                margin-bottom: 30px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .header-left {
+                justify-content: center;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .intro-section {
+                padding: 30px 20px;
+            }
+            
+            .druida-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+            
+            .intro-text {
+                font-size: 1.1rem;
+            }
+            
+            .content-section {
+                padding: 25px 20px;
+            }
+            
+            .manifesto-section {
+                padding: 25px 20px;
+            }
+            
+            .manifesto-title {
+                font-size: 1.5rem;
+            }
+            
+            .manifesto-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-left">
+                <a href="#" class="back-button">←</a>
+                <h1 class="page-title">El Druida</h1>
+            </div>
+            <button class="share-btn" id="shareBtn">
+                🦉 Compartir Sabiduría
+            </button>
+        </header>
+        
+        <!-- Introducción mística -->
+        <section class="intro-section">
+            <div class="druida-avatar">🧙‍♂️</div>
+            <div class="intro-text">
+                "En cada ingrediente reside un secreto ancestral,<br>
+                en cada receta late el corazón de la tradición."
+            </div>
+            <div class="intro-subtitle">
+                — Palabras del Druida Fundador
+            </div>
+        </section>
+        
+        <!-- El Manifiesto del Grimorio -->
+        <section class="manifesto-section">
+            <h2 class="manifesto-title">🌿 Manifiesto del Grimorio Culinario</h2>
+            <div class="manifesto-text">
+                Este grimorio nació del deseo de <span class="highlight">preservar la sabiduría ancestral</span> 
+                y permitir que florezcan nuevas transmutaciones culinarias. Creemos que cada receta es un 
+                <span class="highlight">hechizo viviente</span> que conecta generaciones, culturas y almas hambrientas 
+                de experiencias auténticas.
+                <br><br>
+                Aquí no hay competencia, solo <span class="highlight">colaboración mágica</span>. 
+                Cada ingrediente tiene su propósito, cada paso su ritual, 
+                y cada cocinero su propio poder transformador.
+            </div>
+        </section>
+        
+        <!-- Origen del Grimorio -->
+        <section class="content-section">
+            <h3 class="section-title">
+                📜 El Origen de Ambrosía
+            </h3>
+            <div class="section-content">
+                <p>
+                    En los albores de este proyecto, un druida visionario contempló la pérdida gradual 
+                    de las recetas ancestrales. Las tradiciones culinarias se desvanecían como hojas 
+                    al viento otoñal, y las nuevas generaciones perdían el contacto con la sabiduría 
+                    gastronómica de sus antepasados.
+                </p>
+                <p>
+                    Así nació <strong>Ambrosía</strong> — no como una simple aplicación de recetas, 
+                    sino como un <em>grimorio viviente</em> donde cada hechizo culinario pudiera ser 
+                    preservado, transmutado y compartido con reverencia y respeto por su linaje.
+                </p>
+                <p>
+                    Este espacio sagrado permite que las recetas "de sangre" — aquellas inmutables 
+                    y ancestrales — coexistan armoniosamente con las nuevas variaciones que surgen 
+                    de la creatividad y experimentación de cada druida culinario.
+                </p>
+            </div>
+        </section>
+        
+        <!-- Filosofía del Proyecto -->
+        <section class="content-section">
+            <h3 class="section-title">
+                🌙 Filosofía y Valores
+            </h3>
+            <div class="section-content">
+                <p>
+                    <strong>Ambrosía</strong> se fundamenta en principios que trascienden la mera 
+                    funcionalidad tecnológica. Buscamos crear una experiencia que honre tanto 
+                    la tradición como la innovación.
+                </p>
+                <p>
+                    Rechazamos los algoritmos que priorizan la popularidad sobre la autenticidad. 
+                    Aquí no encontrarás sistemas de ranking, likes o competencias. En su lugar, 
+                    cada receta existe por su propio mérito y propósito mágico.
+                </p>
+                <p>
+                    Creemos en la <em>democratización de la sabiduría culinaria</em> — donde 
+                    tanto el maestro como el aprendiz pueden contribuir al gran grimorio universal 
+                    de sabores y aromas.
+                </p>
+            </div>
+        </section>
+        
+        <!-- Principios del Grimorio -->
+        <section class="content-section">
+            <h3 class="section-title">
+                ⚡ Los Cinco Principios Fundamentales
+            </h3>
+            <div class="principles-grid">
+                <div class="principle-item">
+                    <span class="principle-icon">🧬</span>
+                    <h4 class="principle-title">Linaje Sagrado</h4>
+                    <p class="principle-description">
+                        Respetamos y preservamos las recetas ancestrales como patrimonio 
+                        inmutable, permitiendo variaciones que honren su esencia original.
+                    </p>
+                </div>
+                
+                <div class="principle-item">
+                    <span class="principle-icon">🌱</span>
+                    <h4 class="principle-title">Crecimiento Orgánico</h4>
+                    <p class="principle-description">
+                        El grimorio evoluciona naturalmente con las contribuciones de cada 
+                        druida, sin imposiciones algorítmicas o presiones comerciales.
+                    </p>
+                </div>
+                
+                <div class="principle-item">
+                    <span class="principle-icon">🤝</span>
+                    <h4 class="principle-title">Colaboración Mística</h4>
+                    <p class="principle-description">
+                        Fomentamos el intercambio de conocimientos entre cocineros de todos 
+                        los niveles, creando una comunidad de aprendizaje mutuo.
+                    </p>
+                </div>
+                
+                <div class="principle-item">
+                    <span class="principle-icon">🛡️</span>
+                    <h4 class="principle-title">Privacidad Protegida</h4>
+                    <p class="principle-description">
+                        Tus datos personales y recetas están bajo tu control. No vendemos 
+                        información ni imponemos publicidad invasiva.
+                    </p>
+                </div>
+                
+                <div class="principle-item">
+                    <span class="principle-icon">🎨</span>
+                    <h4 class="principle-title">Belleza Funcional</h4>
+                    <p class="principle-description">
+                        Cada elemento visual y funcional está diseñado para inspirar 
+                        y facilitar tu viaje culinario con elegancia y propósito.
+                    </p>
+                </div>
+                
+                <div class="principle-item">
+                    <span class="principle-icon">🌍</span>
+                    <h4 class="principle-title">Acceso Universal</h4>
+                    <p class="principle-description">
+                        La sabiduría culinaria debe estar disponible para todos, 
+                        independientemente de barreras económicas o geográficas.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Tecnologías utilizadas -->
+        <section class="tech-section">
+            <h3 class="section-title">
+                ⚙️ Las Artes Técnicas
+            </h3>
+            <div class="section-content">
+                <p>
+                    Este grimorio digital fue forjado utilizando tecnologías modernas 
+                    que garantizan una experiencia fluida y confiable:
+                </p>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <span class="tech-icon">📱</span>
+                    <div class="tech-name">React Native</div>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">⚡</span>
+                    <div class="tech-name">Expo</div>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">💾</span>
+                    <div class="tech-name">SQLite</div>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">🎨</span>
+                    <div class="tech-name">Design System</div>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">🔒</span>
+                    <div class="tech-name">Offline First</div>
+                </div>
+                <div class="tech-item">
+                    <span class="tech-icon">🌙</span>
+                    <div class="tech-name">Dark Magic</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Créditos y reconocimientos -->
+        <section class="content-section">
+            <h3 class="section-title">
+                🙏 Reconocimientos Ancestrales
+            </h3>
+            <div class="section-content">
+                <p>
+                    Este grimorio no habría sido posible sin la inspiración de innumerables 
+                    cocineros, abuelas sabias, chefs visionarios y culturas culinarias 
+                    que han preservado sus tradiciones a través de los siglos.
+                </p>
+                <p>
+                    Agradecemos especialmente a todos los beta-testers que compartieron 
+                    sus recetas, feedback y energía durante el desarrollo de Ambrosía. 
+                    Sus contribuciones han dado forma a este espacio sagrado.
+                </p>
+                <p>
+                    <strong>Dedicatoria especial:</strong> A todas las abuelas del mundo 
+                    que nunca escribieron sus recetas pero las grabaron en nuestros corazones 
+                    con cada bocado lleno de amor.
+                </p>
+            </div>
+        </section>
+        
+        <!-- Footer místico -->
+        <footer class="mystic-footer">
+            <div class="footer-symbol">🔮</div>
+            <div class="footer-text">
+                "Que cada comida sea un ritual,<br>
+                cada ingrediente una bendición,<br>
+                y cada receta un legado."
+            </div>
+            <div class="version-info">
+                Ambrosía v1.0 — Grimorio Culinario<br>
+                Creado con 💛 y un toque de magia ancestral
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // Funcionalidad básica para compartir
+        document.getElementById('shareBtn').addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Ambrosía - Grimorio Culinario',
+                    text: 'Descubre el grimorio donde cada receta es un hechizo culinario lleno de sabiduría ancestral.',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback para navegadores que no soportan Web Share API
+                const text = 'Descubre Ambrosía - Grimorio Culinario: donde cada receta es un hechizo lleno de sabiduría ancestral.';
+                navigator.clipboard.writeText(`${text} ${window.location.href}`)
+                    .then(() => alert('🦉 Enlace copiado al pergamino (portapapeles)'))
+                    .catch(() => alert('No se pudo compartir, pero puedes copiar la URL manualmente.'));
+            }
+        });
+        
+        // Animación de aparición para las secciones
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Aplicar animaciones a las secciones
+        document.querySelectorAll('.content-section, .manifesto-section, .tech-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

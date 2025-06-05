@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambrosía - Categorías</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 50%, #0f0604 100%);
+            min-height: 100vh;
+            color: #d4af37;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Textura de pergamino */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 69, 19, 0.05) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="1" seed="1"/></filter></defs><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .back-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4af37;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 2px;
+        }
+        
+        /* Acordeón de categorías */
+        .categories-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+        
+        .accordion-item {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(184, 134, 11, 0.08) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .accordion-item.active {
+            border-color: rgba(212, 175, 55, 0.6);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.2);
+        }
+        
+        .accordion-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .accordion-header:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .accordion-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+        }
+        
+        .accordion-content-header {
+            flex-grow: 1;
+        }
+        
+        .accordion-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #d4af37;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+        }
+        
+        .accordion-subtitle {
+            font-size: 0.9rem;
+            color: rgba(212, 175, 55, 0.7);
+            font-style: italic;
+            line-height: 1.3;
+        }
+        
+        .accordion-count {
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            color: #d4af37;
+            font-weight: 500;
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        
+        .accordion-arrow {
+            font-size: 1.2rem;
+            color: #d4af37;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .accordion-item.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
+        
+        /* Contenido del acordeón */
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        
+        .accordion-item.active .accordion-body {
+            max-height: 1000px;
+        }
+        
+        .accordion-body-content {
+            padding: 0 20px 20px 20px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            margin-top: -1px;
+        }
+        
+        .subcategories-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .subcategory-item {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .subcategory-item:hover {
+            background: rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateX(5px);
+        }
+        
+        .subcategory-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .subcategory-name {
+            font-size: 0.9rem;
+            color: #d4af37;
+            flex-grow: 1;
+        }
+        
+        .subcategory-count {
+            font-size: 0.75rem;
+            color: rgba(212, 175, 55, 0.6);
+            background: rgba(212, 175, 55, 0.1);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+        
+        /* Colores específicos para categorías */
+        .category-principales {
+            background: linear-gradient(135deg, rgba(178, 34, 34, 0.15) 0%, rgba(139, 26, 26, 0.1) 100%);
+            border-color: rgba(178, 34, 34, 0.4);
+        }
+        
+        .category-principales.active {
+            border-color: rgba(178, 34, 34, 0.7);
+        }
+        
+        .category-ensaladas {
+            background: linear-gradient(135deg, rgba(34, 139, 34, 0.15) 0%, rgba(0, 100, 0, 0.1) 100%);
+            border-color: rgba(34, 139, 34, 0.4);
+        }
+        
+        .category-ensaladas.active {
+            border-color: rgba(34, 139, 34, 0.7);
+        }
+        
+        .category-entradas {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(101, 67, 33, 0.1) 100%);
+            border-color: rgba(139, 69, 19, 0.4);
+        }
+        
+        .category-entradas.active {
+            border-color: rgba(139, 69, 19, 0.7);
+        }
+        
+        .category-sopas {
+            background: linear-gradient(135deg, rgba(205, 133, 63, 0.15) 0%, rgba(160, 82, 45, 0.1) 100%);
+            border-color: rgba(205, 133, 63, 0.4);
+        }
+        
+        .category-sopas.active {
+            border-color: rgba(205, 133, 63, 0.7);
+        }
+        
+        .category-rapida {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.15) 0%, rgba(255, 69, 0, 0.1) 100%);
+            border-color: rgba(255, 140, 0, 0.4);
+        }
+        
+        .category-rapida.active {
+            border-color: rgba(255, 140, 0, 0.7);
+        }
+        
+        .category-masas {
+            background: linear-gradient(135deg, rgba(210, 180, 140, 0.15) 0%, rgba(188, 143, 143, 0.1) 100%);
+            border-color: rgba(210, 180, 140, 0.4);
+        }
+        
+        .category-masas.active {
+            border-color: rgba(210, 180, 140, 0.7);
+        }
+        
+        .category-postres {
+            background: linear-gradient(135deg, rgba(218, 165, 32, 0.15) 0%, rgba(184, 134, 11, 0.1) 100%);
+            border-color: rgba(218, 165, 32, 0.4);
+        }
+        
+        .category-postres.active {
+            border-color: rgba(218, 165, 32, 0.7);
+        }
+        
+        .category-bebidas-sin {
+            background: linear-gradient(135deg, rgba(64, 224, 208, 0.15) 0%, rgba(32, 178, 170, 0.1) 100%);
+            border-color: rgba(64, 224, 208, 0.4);
+        }
+        
+        .category-bebidas-sin.active {
+            border-color: rgba(64, 224, 208, 0.7);
+        }
+        
+        .category-cocteles {
+            background: linear-gradient(135deg, rgba(75, 0, 130, 0.15) 0%, rgba(72, 61, 139, 0.1) 100%);
+            border-color: rgba(75, 0, 130, 0.4);
+        }
+        
+        .category-cocteles.active {
+            border-color: rgba(75, 0, 130, 0.7);
+        }
+        
+        .category-salsas {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.15) 0%, rgba(178, 34, 34, 0.1) 100%);
+            border-color: rgba(220, 20, 60, 0.4);
+        }
+        
+        .category-salsas.active {
+            border-color: rgba(220, 20, 60, 0.7);
+        }
+        
+        .category-conservas {
+            background: linear-gradient(135deg, rgba(107, 142, 35, 0.15) 0%, rgba(85, 107, 47, 0.1) 100%);
+            border-color: rgba(107, 142, 35, 0.4);
+        }
+        
+        .category-conservas.active {
+            border-color: rgba(107, 142, 35, 0.7);
+        }
+        
+        .category-menus {
+            background: linear-gradient(135deg, rgba(148, 0, 211, 0.15) 0%, rgba(138, 43, 226, 0.1) 100%);
+            border-color: rgba(148, 0, 211, 0.4);
+        }
+        
+        .category-menus.active {
+            border-color: rgba(148, 0, 211, 0.7);
+        }
+        
+        .category-especias {
+            background: linear-gradient(135deg, rgba(165, 42, 42, 0.15) 0%, rgba(128, 0, 0, 0.1) 100%);
+            border-color: rgba(165, 42, 42, 0.4);
+        }
+        
+        .category-especias.active {
+            border-color: rgba(165, 42, 42, 0.7);
+        }
+        
+        .category-tecnicas {
+            background: linear-gradient(135deg, rgba(105, 105, 105, 0.15) 0%, rgba(119, 136, 153, 0.1) 100%);
+            border-color: rgba(105, 105, 105, 0.4);
+        }
+        
+        .category-tecnicas.active {
+            border-color: rgba(105, 105, 105, 0.7);
+        }
+        
+        .category-ceremonial {
+            background: linear-gradient(135deg, rgba(153, 50, 204, 0.15) 0%, rgba(186, 85, 211, 0.1) 100%);
+            border-color: rgba(153, 50, 204, 0.4);
+        }
+        
+        .category-ceremonial.active {
+            border-color: rgba(153, 50, 204, 0.7);
+        }
+        
+        .category-internacional {
+            background: linear-gradient(135deg, rgba(30, 144, 255, 0.15) 0%, rgba(65, 105, 225, 0.1) 100%);
+            border-color: rgba(30, 144, 255, 0.4);
+        }
+        
+        .category-internacional.active {
+            border-color: rgba(30, 144, 255, 0.7);
+        }
+        
+        .category-temporada {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.15) 0%, rgba(255, 140, 0, 0.1) 100%);
+            border-color: rgba(255, 165, 0, 0.4);
+        }
+        
+        .category-temporada.active {
+            border-color: rgba(255, 165, 0, 0.7);
+        }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px 60px;
+            }
+            
+            .accordion-header {
+                padding: 25px;
+            }
+            
+            .accordion-body-content {
+                padding: 0 25px 25px 25px;
+            }
+            
+            .subcategories-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .accordion-title {
+                font-size: 1.4rem;
+            }
+            
+            .accordion-subtitle {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 639px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .page-title {
+                font-size: 1.6rem;
+            }
+            
+            .accordion-header {
+                padding: 16px;
+                gap: 15px;
+            }
+            
+            .accordion-body-content {
+                padding: 0 16px 16px 16px;
+            }
+            
+            .accordion-icon {
+                font-size: 1.6rem;
+            }
+            
+            .accordion-title {
+                font-size: 1.1rem;
+            }
+            
+            .accordion-subtitle {
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                margin-bottom: 30px;
+            }
+            
+            .back-button {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .accordion-header {
+                padding: 14px;
+                gap: 12px;
+            }
+            
+            .accordion-icon {
+                font-size: 1.4rem;
+            }
+            
+            .accordion-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="#" class="back-button">←</a>
+            <h1 class="page-title">Categorías</h1>
+        </header>
+        
+        <div class="categories-accordion">
+            <!-- Platos Salados Principales -->
+            <div class="accordion-item category-principales">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🍽️</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Platos Salados Principales</h3>
+                        <p class="accordion-subtitle">Banquetes poderosos que nutren cuerpo y espíritu</p>
+                    </div>
+                    <div class="accordion-count">42</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥩</div>
+                                <div class="subcategory-name">Carnes (vacuno, cerdo, cordero)</div>
+                                <div class="subcategory-count">12</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🐔</div>
+                                <div class="subcategory-name">Aves (pollo, pavo, pato)</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🐟</div>
+                                <div class="subcategory-name">Pescados y mariscos</div>
+                                <div class="subcategory-count">10</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌱</div>
+                                <div class="subcategory-name">Platos vegetarianos y veganos</div>
+                                <div class="subcategory-count">7</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍲</div>
+                                <div class="subcategory-name">Guisos y estofados</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍝</div>
+                                <div class="subcategory-name">Pastas y arroces</div>
+                                <div class="subcategory-count">9</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ensaladas -->
+            <div class="accordion-item category-ensaladas">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🥗</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Ensaladas</h3>
+                        <p class="accordion-subtitle">Jardines encantados de frescura y vitalidad</p>
+                    </div>
+                    <div class="accordion-count">28</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥬</div>
+                                <div class="subcategory-name">Verdes y frescas</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥓</div>
+                                <div class="subcategory-name">Ensaladas con proteínas</div>
+                                <div class="subcategory-count">7</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍅</div>
+                                <div class="subcategory-name">Ensaladas templadas o tibias</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌾</div>
+                                <div class="subcategory-name">Ensaladas con granos o legumbres</div>
+                                <div class="subcategory-count">7</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entradas, Aperitivos y Picoteos -->
+            <div class="accordion-item category-entradas">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🧀</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Entradas, Aperitivos y Picoteos</h3>
+                        <p class="accordion-subtitle">Pequeños rituales para despertar los sentidos</p>
+                    </div>
+                    <div class="accordion-count">35</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍤</div>
+                                <div class="subcategory-name">Tapas, canapés, dips</div>
+                                <div class="subcategory-count">12</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥖</div>
+                                <div class="subcategory-name">Bruschettas y crostinis</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍢</div>
+                                <div class="subcategory-name">Mini brochetas y bocados calientes</div>
+                                <div class="subcategory-count">9</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🧄</div>
+                                <div class="subcategory-name">Tablas y picoteo para compartir</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sopas, Cremas y Caldos -->
+            <div class="accordion-item category-sopas">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🥣</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Sopas, Cremas y Caldos</h3>
+                        <p class="accordion-subtitle">Calderos humeantes que confortan el alma</p>
+                    </div>
+                    <div class="accordion-count">26</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🔥</div>
+                                <div class="subcategory-name">Sopas calientes</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">❄️</div>
+                                <div class="subcategory-name">Sopas frías</div>
+                                <div class="subcategory-count">5</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥕</div>
+                                <div class="subcategory-name">Cremas de verduras</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍖</div>
+                                <div class="subcategory-name">Fondos y caldos base</div>
+                                <div class="subcategory-count">5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comida Rápida -->
+            <div class="accordion-item category-rapida">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🍕</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Comida Rápida / Al Paso</h3>
+                        <p class="accordion-subtitle">Hechizos veloces para la vida moderna</p>
+                    </div>
+                    <div class="accordion-count">31</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍔</div>
+                                <div class="subcategory-name">Hamburguesas</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌭</div>
+                                <div class="subcategory-name">Hot dogs y choripanes</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥪</div>
+                                <div class="subcategory-name">Sandwiches y wraps</div>
+                                <div class="subcategory-count">9</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌮</div>
+                                <div class="subcategory-name">Tacos, burritos, empanadas</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Masas y Panadería -->
+            <div class="accordion-item category-masas">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🍞</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Masas y Panadería</h3>
+                        <p class="accordion-subtitle">Alquimia ancestral de harinas y levaduras</p>
+                    </div>
+                    <div class="accordion-count">24</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥐</div>
+                                <div class="subcategory-name">Masas básicas (quebrada, pizza, hojaldre)</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍞</div>
+                                <div class="subcategory-name">Panes caseros (dulces y salados)</div>
+                                <div class="subcategory-count">7</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥖</div>
+                                <div class="subcategory-name">Focaccias, calzones, baguettes</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥯</div>
+                                <div class="subcategory-name">Bollería y facturas</div>
+                                <div class="subcategory-count">5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Postres y Repostería -->
+            <div class="accordion-item category-postres">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🍰</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Postres y Repostería</h3>
+                        <p class="accordion-subtitle">Dulces encantamientos que alegran el corazón</p>
+                    </div>
+                    <div class="accordion-count">33</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍨</div>
+                                <div class="subcategory-name">Postres fríos (mousse, helado, cheesecake)</div>
+                                <div class="subcategory-count">9</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🔥</div>
+                                <div class="subcategory-name">Postres calientes (flan, crumbles, soufflés)</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🎂</div>
+                                <div class="subcategory-name">Tortas y bizcochos</div>
+                                <div class="subcategory-count">10</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍪</div>
+                                <div class="subcategory-name">Galletas, brownies, alfajores</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bebestibles Sin Alcohol -->
+            <div class="accordion-item category-bebidas-sin">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🍹</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Bebestibles Sin Alcohol</h3>
+                        <p class="accordion-subtitle">Elixires puros de la naturaleza sagrada</p>
+                    </div>
+                    <div class="accordion-count">19</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍊</div>
+                                <div class="subcategory-name">Jugos naturales</div>
+                                <div class="subcategory-count">5</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥤</div>
+                                <div class="subcategory-name">Smoothies y licuados</div>
+                                <div class="subcategory-count">4</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">💧</div>
+                                <div class="subcategory-name">Aguas saborizadas</div>
+                                <div class="subcategory-count">3</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍵</div>
+                                <div class="subcategory-name">Infusiones y tés</div>
+                                <div class="subcategory-count">4</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">☕</div>
+                                <div class="subcategory-name">Chocolates calientes y cafés especiales</div>
+                                <div class="subcategory-count">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cócteles y Bebidas con Licor -->
+            <div class="accordion-item category-cocteles">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🍸</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Cócteles y Bebidas con Licor</h3>
+                        <p class="accordion-subtitle">Pócimas espirituosas para celebrar la vida</p>
+                    </div>
+                    <div class="accordion-count">22</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍹</div>
+                                <div class="subcategory-name">Tragos clásicos (Margarita, Mojito, Negroni)</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🧪</div>
+                                <div class="subcategory-name">Tragos de autor</div>
+                                <div class="subcategory-count">5</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥃</div>
+                                <div class="subcategory-name">Shots y combinados</div>
+                                <div class="subcategory-count">4</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍷</div>
+                                <div class="subcategory-name">Aperitivos y digestivos</div>
+                                <div class="subcategory-count">3</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">☕</div>
+                                <div class="subcategory-name">Bebidas calientes con licor (Irish coffee, grog)</div>
+                                <div class="subcategory-count">2</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salsas, Aderezos y Condimentos -->
+            <div class="accordion-item category-salsas">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🧂</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Salsas, Aderezos y Condimentos</h3>
+                        <p class="accordion-subtitle">Esencias mágicas que transforman sabores</p>
+                    </div>
+                    <div class="accordion-count">17</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌶️</div>
+                                <div class="subcategory-name">Salsas frías y calientes</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥗</div>
+                                <div class="subcategory-name">Vinagretas y dips</div>
+                                <div class="subcategory-count">4</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌿</div>
+                                <div class="subcategory-name">Untables y pestos</div>
+                                <div class="subcategory-count">4</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🧄</div>
+                                <div class="subcategory-name">Aliños caseros</div>
+                                <div class="subcategory-count">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conservas y Fermentos -->
+            <div class="accordion-item category-conservas">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🧄</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Conservas y Fermentos</h3>
+                        <p class="accordion-subtitle">Sabiduría antigua de preservación natural</p>
+                    </div>
+                    <div class="accordion-count">15</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥒</div>
+                                <div class="subcategory-name">Encurtidos y pickles</div>
+                                <div class="subcategory-count">5</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍓</div>
+                                <div class="subcategory-name">Mermeladas y compotas</div>
+                                <div class="subcategory-count">4</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥛</div>
+                                <div class="subcategory-name">Yogurt, kéfir, chucrut</div>
+                                <div class="subcategory-count">3</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">⏰</div>
+                                <div class="subcategory-name">Técnicas de conservación casera</div>
+                                <div class="subcategory-count">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menús y Combinaciones -->
+            <div class="accordion-item category-menus">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🍴</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Menús y Combinaciones</h3>
+                        <p class="accordion-subtitle">Ceremonias culinarias para ocasiones especiales</p>
+                    </div>
+                    <div class="accordion-count">12</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🎉</div>
+                                <div class="subcategory-name">Menús por ocasión (fiestas, cenas románticas, brunch)</div>
+                                <div class="subcategory-count">5</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍽️</div>
+                                <div class="subcategory-name">Comidas de tres tiempos</div>
+                                <div class="subcategory-count">4</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍷</div>
+                                <div class="subcategory-name">Maridaje con vinos, cervezas, jugos</div>
+                                <div class="subcategory-count">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Especias y Hierbas Aromáticas -->
+            <div class="accordion-item category-especias">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🌶️</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Especias y Hierbas Aromáticas</h3>
+                        <p class="accordion-subtitle">Tesoros secretos del herbolario mágico</p>
+                    </div>
+                    <div class="accordion-count">45</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌿</div>
+                                <div class="subcategory-name">Hierbas frescas y secas</div>
+                                <div class="subcategory-count">15</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌶️</div>
+                                <div class="subcategory-name">Especias picantes</div>
+                                <div class="subcategory-count">12</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🧂</div>
+                                <div class="subcategory-name">Sales y mezclas especiales</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌰</div>
+                                <div class="subcategory-name">Especias dulces y aromáticas</div>
+                                <div class="subcategory-count">10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Técnicas y Métodos -->
+            <div class="accordion-item category-tecnicas">
+                <div class="accordion-header">
+                    <div class="accordion-icon">⚗️</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Técnicas y Métodos</h3>
+                        <p class="accordion-subtitle">Artes ancestrales de transformación culinaria</p>
+                    </div>
+                    <div class="accordion-count">38</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🔥</div>
+                                <div class="subcategory-name">Técnicas de cocción (asado, braseo, fritura)</div>
+                                <div class="subcategory-count">12</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🔪</div>
+                                <div class="subcategory-name">Cortes y preparación</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">❄️</div>
+                                <div class="subcategory-name">Conservación y marinados</div>
+                                <div class="subcategory-count">7</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌡️</div>
+                                <div class="subcategory-name">Control de temperatura</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">⏰</div>
+                                <div class="subcategory-name">Tiempos y secuencias</div>
+                                <div class="subcategory-count">5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cocina Ceremonial y Ritual -->
+            <div class="accordion-item category-ceremonial">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🕯️</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Cocina Ceremonial y Ritual</h3>
+                        <p class="accordion-subtitle">Platos sagrados para conectar con lo divino</p>
+                    </div>
+                    <div class="accordion-count">16</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌕</div>
+                                <div class="subcategory-name">Cocina de luna llena</div>
+                                <div class="subcategory-count">4</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍂</div>
+                                <div class="subcategory-name">Rituales estacionales</div>
+                                <div class="subcategory-count">5</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🕯️</div>
+                                <div class="subcategory-name">Platos de celebración</div>
+                                <div class="subcategory-count">4</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🧘</div>
+                                <div class="subcategory-name">Cocina meditativa</div>
+                                <div class="subcategory-count">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cocinas del Mundo -->
+            <div class="accordion-item category-internacional">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🌍</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Cocinas del Mundo</h3>
+                        <p class="accordion-subtitle">Sabores místicos de tierras lejanas</p>
+                    </div>
+                    <div class="accordion-count">67</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍝</div>
+                                <div class="subcategory-name">Cocina Mediterránea</div>
+                                <div class="subcategory-count">15</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍜</div>
+                                <div class="subcategory-name">Cocina Asiática</div>
+                                <div class="subcategory-count">18</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌮</div>
+                                <div class="subcategory-name">Cocina Latinoamericana</div>
+                                <div class="subcategory-count">14</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🥖</div>
+                                <div class="subcategory-name">Cocina Europea</div>
+                                <div class="subcategory-count">12</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍛</div>
+                                <div class="subcategory-name">Cocina Africana y Medio Oriente</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cocina de Temporada -->
+            <div class="accordion-item category-temporada">
+                <div class="accordion-header">
+                    <div class="accordion-icon">🍂</div>
+                    <div class="accordion-content-header">
+                        <h3 class="accordion-title">Cocina de Temporada</h3>
+                        <p class="accordion-subtitle">Siguiendo los ciclos naturales del cosmos</p>
+                    </div>
+                    <div class="accordion-count">29</div>
+                    <div class="accordion-arrow">▼</div>
+                </div>
+                <div class="accordion-body">
+                    <div class="accordion-body-content">
+                        <div class="subcategories-grid">
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🌸</div>
+                                <div class="subcategory-name">Cocina de Primavera</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">☀️</div>
+                                <div class="subcategory-name">Cocina de Verano</div>
+                                <div class="subcategory-count">7</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">🍂</div>
+                                <div class="subcategory-name">Cocina de Otoño</div>
+                                <div class="subcategory-count">8</div>
+                            </div>
+                            <div class="subcategory-item">
+                                <div class="subcategory-icon">❄️</div>
+                                <div class="subcategory-name">Cocina de Invierno</div>
+                                <div class="subcategory-count">6</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Funcionalidad del acordeón
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const accordionItem = header.parentElement;
+                const isActive = accordionItem.classList.contains('active');
+                
+                // Cerrar todos los acordeones
+                document.querySelectorAll('.accordion-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Si no estaba activo, abrirlo
+                if (!isActive) {
+                    accordionItem.classList.add('active');
+                }
+            });
+        });
+
+        // Funcionalidad para las subcategorías
+        document.querySelectorAll('.subcategory-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const subcategoryName = item.querySelector('.subcategory-name').textContent;
+                console.log('Subcategoría seleccionada:', subcategoryName);
+                // Aquí iría la lógica para navegar a la subcategoría
+            });
+        });
+    </script>
+</body>
+</html>
