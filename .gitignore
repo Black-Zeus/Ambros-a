@@ -1,12 +1,59 @@
+# Node modules
 node_modules/
+**/node_modules/
+
+# Build outputs
 .expo/
 dist/
-npm-debug.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-*.orig.*
-web-build/
-node_modules/
+build/
+android/
+ios/
+
+# Expo
+*.expo*
+*.turtle*
+
+# React Native / Metro / Cache
+.cache/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+expo-debug.log
+
+# TypeScript
+*.tsbuildinfo
+
+# VSCode/IDE
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files (manejar vía método seguro)
+.env
+.env.*
+!.env.template
+
+# Archivos sensibles o temporales
+*.bak
+*.tmp
+*.swp
+
+# Docker
+docker-compose.override.yml
+*.pid
+
+# Git control
+!.gitignore
+
+# Coverage / Testing
+coverage/
+jest-cache/
+*.lcov
+.nyc_output
+
+# Output de scripts
+scripts/output/
