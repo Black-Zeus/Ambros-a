@@ -1,13 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { Home } from './src/Home';
-
+import HomePage from './src/pages/HomePage';
 import './global.css';
 
 export default function App() {
   return (
     <>
-      <Home />
-      <StatusBar style="auto" />
+      <HomePage />
+      <StatusBar style="dark" backgroundColor="transparent" translucent />
     </>
   );
 }
