@@ -4,7 +4,83 @@
 ENV="dev"
 LABEL_FILTER="stack=Ambrosia"
 COMPOSE_FILE=""
+CURRENT_IP=""
 
+# Función para obtener la IP actual del equipo
+get_current_ip() {
+    # Intentar obtener IP por diferentes métodos
+    local ip=""
+    
+    # Método 1: Usar ip route (Linux)
+    if command -v ip &> /dev/null; then
+        ip=$(ip route get 8.8.8.8 2>/dev/null | awk '{print $7; exit}')
+    fi
+    
+    # Método 2: Usar route (macOS/Linux)
+    if [[ -z "$ip" ]] && command -v route &> /dev/null; then
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS
+            ip=$(route get default 2>/dev/null | grep 'interface:' | awk '{print $2}' | xargs ifconfig 2>/dev/null | grep 'inet ' | grep -v '127.0.0.1' | awk '{print $2}' | head -1)
+        else
+            # Linux
+            ip=$(route -n get default 2>/dev/null | grep 'interface:' | awk '{print $2}' | xargs ip addr show 2>/dev/null | grep 'inet ' | grep -v '127.0.0.1' | awk '{print $2}' | cut -d'/' -f1 | head -1)
+        fi
+    fi
+    
+    # Método 3: Usar hostname (macOS/Linux)
+    if [[ -z "$ip" ]] && command -v hostname &> /dev/null; then
+        ip=$(hostname -I 2>/dev/null | awk '{print $1}')
+    fi
+    
+    # Método 4: Usar ifconfig (macOS/Linux)
+    if [[ -z "$ip" ]] && command -v ifconfig &> /dev/null; then
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS
+            ip=$(ifconfig | grep 'inet ' | grep -v '127.0.0.1' | awk '{print $2}' | head -1)
+        else
+            # Linux
+            ip=$(ifconfig | grep 'inet ' | grep -v '127.0.0.1' | awk '{print $2}' | head -1)
+        fi
+    fi
+    
+    # Método 5: Usar netstat (como último recurso)
+    if [[ -z "$ip" ]] && command -v netstat &> /dev/null; then
+        ip=$(netstat -rn | grep '^0.0.0.0' | awk '{print $2}' | head -1)
+    fi
+    
+    echo "$ip"
+}
+
+# Función para actualizar la IP en el archivo docker-compose
+update_ip_in_compose() {
+    local new_ip="$1"
+    local compose_file="$2"
+    
+    if [[ -z "$new_ip" ]]; then
+        echo "❌ No se pudo obtener la IP actual del equipo."
+        return 1
+    fi
+    
+    if [[ ! -f "$compose_file" ]]; then
+        echo "❌ El archivo $compose_file no existe."
+        return 1
+    fi
+    
+    # Crear backup del archivo original
+    cp "$compose_file" "${compose_file}.backup.$(date +%Y%m%d_%H%M%S)"
+    
+    # Actualizar la IP en el archivo
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        sed -i '' "s/REACT_NATIVE_PACKAGER_HOSTNAME=.*/REACT_NATIVE_PACKAGER_HOSTNAME=$new_ip/" "$compose_file"
+    else
+        # Linux
+        sed -i "s/REACT_NATIVE_PACKAGER_HOSTNAME=.*/REACT_NATIVE_PACKAGER_HOSTNAME=$new_ip/" "$compose_file"
+    fi
+    
+    echo "✅ IP actualizada a $new_ip en $compose_file"
+    return 0
+}
 
 # Funcion para truncar texto y mantener tamaño maximo
 truncate_text() {
@@ -40,57 +116,218 @@ define_compose_file() {
 menu() {
   clear
   define_compose_file
+  check_current_ip
   echo "======================================="
   echo "Docker Tools - Entorno: $ENV"
   echo "Archivo de configuración: $COMPOSE_FILE"
   echo "======================================="
-  echo " 1. Iniciar contenedores y construir imagenes"
-  echo " 2. Detener y eliminar contenedores"
-  echo " 3. Reiniciar contenedores"
-  echo " 4. Reiniciar contenedor unico"
-  echo " 5. Construir imágenes"
-  echo " 6. Ver logs"
-  echo " 7. Estado de los contenedores"
-  echo " 8. Listar contenedores de stack"
-  echo " 9. Abrir terminal en contenedor de stack"
-  echo "10. Limpiar contenedores, redes, imágenes y volúmenes"
-  echo "11. Limpiar imágenes no utilizadas"
-  echo "12. Limpiar volúmenes no utilizados"
-  echo "13. Limpiar todo (contenedores, imágenes y volúmenes)"
-  echo "14. Eliminar Persistencias"
-  echo "15. Cambiar entorno (dev, qa, prd)"
-  echo "16. Iniciar Expo (manual desde contenedor)"
-  echo "17. Salir"
+  echo ""
+  echo " 1. 📋 MANEJADOR DE CONTENEDORES"
+  echo " 2. 📊 MONITOREO Y DIAGNÓSTICO"
+  echo " 3. 🧹 LIMPIEZA Y MANTENIMIENTO"
+  echo " 4. ⚙️  CONFIGURACIÓN DEL SISTEMA"
+  echo " 5. 📱 HERRAMIENTAS EXPO"
+  echo ""
+  echo " S. 🚪 Salir"
   echo "======================================="
-  read -p "Seleccione una opción [1-17]: " choice
+  read -p "👉 Seleccione una opción [1-5, S]: " choice
 
   case "$choice" in
-    1) up ;;
-    2) down ;;
-    3) restart ;;
-    4) restart_single_container  ;;
-    5) build ;;
-    6) logs ;;
-    7) ps ;;
-    8) list_stack ;;
-    9) exec_stack ;;
-    10) clean ;;
-    11) clean_images ;;
-    12) clean_volumes ;;
-    13) clean_all ;;
-    14) drop_persistence;;
-    15) change_env ;;
-    16) iniciar_expo ;;
-    17) exit_script ;;
+    1) menu_contenedores ;;
+    2) menu_monitoreo ;;
+    3) menu_limpieza ;;
+    4) menu_configuracion ;;
+    5) menu_expo ;;
+    [Ss]) exit_script ;;
     *)
-      echo "Opción inválida. Inténtelo de nuevo."
-      sleep 2
+      echo "❌ Opción inválida. Inténtelo de nuevo."
+      sleep 3
       menu
       ;;
   esac
 }
 
-# Funciones
+# Submenú: Manejador de Contenedores
+menu_contenedores() {
+  clear
+  echo "======================================="
+  echo "📋 MANEJADOR DE CONTENEDORES"
+  echo "Entorno: $ENV | Archivo: $COMPOSE_FILE"
+  echo "======================================="
+  echo ""
+  echo " 1. 🚀 Iniciar contenedores y construir imagenes"
+  echo " 2. 🛑 Detener y eliminar contenedores"
+  echo " 3. 🔄 Reiniciar contenedores"
+  echo " 4. 🔃 Reiniciar contenedor unico"
+  echo " 5. 🔨 Construir imágenes"
+  echo ""
+  echo " V. ⬅️  Volver al menú principal"
+  echo " S. 🚪 Salir"
+  echo "======================================="
+  read -p "👉 Seleccione una opción [1-5, V, S]: " choice
+
+  case "$choice" in
+    1) up ;;
+    2) down ;;
+    3) restart ;;
+    4) restart_single_container ;;
+    5) build ;;
+    [Vv]) menu ;;
+    [Ss]) exit_script ;;
+    *)
+      echo "❌ Opción inválida. Inténtelo de nuevo."
+      sleep 3
+      menu_contenedores
+      ;;
+  esac
+}
+
+# Submenú: Monitoreo y Diagnóstico
+menu_monitoreo() {
+  clear
+  echo "======================================="
+  echo "📊 MONITOREO Y DIAGNÓSTICO"
+  echo "Entorno: $ENV | Archivo: $COMPOSE_FILE"
+  echo "======================================="
+  echo ""
+  echo " 1. 📋 Ver logs"
+  echo " 2. 📊 Estado de los contenedores"
+  echo " 3. 📦 Listar contenedores de stack"
+  echo " 4. 💻 Abrir terminal en contenedor de stack"
+  echo ""
+  echo " V. ⬅️  Volver al menú principal"
+  echo " S. 🚪 Salir"
+  echo "======================================="
+  read -p "👉 Seleccione una opción [1-4, V, S]: " choice
+
+  case "$choice" in
+    1) logs ;;
+    2) ps ;;
+    3) list_stack ;;
+    4) exec_stack ;;
+    [Vv]) menu ;;
+    [Ss]) exit_script ;;
+    *)
+      echo "❌ Opción inválida. Inténtelo de nuevo."
+      sleep 3
+      menu_monitoreo
+      ;;
+  esac
+}
+
+# Submenú: Limpieza y Mantenimiento
+menu_limpieza() {
+  clear
+  echo "======================================="
+  echo "🧹 LIMPIEZA Y MANTENIMIENTO"
+  echo "Entorno: $ENV | Archivo: $COMPOSE_FILE"
+  echo "======================================="
+  echo ""
+  echo " 1. 🧹 Limpiar contenedores, redes, imágenes y volúmenes"
+  echo " 2. 🖼️  Limpiar imágenes no utilizadas"
+  echo " 3. 💾 Limpiar volúmenes no utilizados"
+  echo " 4. 🗑️  Limpiar todo (contenedores, imágenes y volúmenes)"
+  echo " 5. 🔥 Eliminar Persistencias"
+  echo ""
+  echo " V. ⬅️  Volver al menú principal"
+  echo " S. 🚪 Salir"
+  echo "======================================="
+  read -p "👉 Seleccione una opción [1-5, V, S]: " choice
+
+  case "$choice" in
+    1) clean ;;
+    2) clean_images ;;
+    3) clean_volumes ;;
+    4) clean_all ;;
+    5) drop_persistence ;;
+    [Vv]) menu ;;
+    [Ss]) exit_script ;;
+    *)
+      echo "❌ Opción inválida. Inténtelo de nuevo."
+      sleep 3
+      menu_limpieza
+      ;;
+  esac
+}
+
+# Submenú: Configuración del Sistema
+menu_configuracion() {
+  clear
+  echo "======================================="
+  echo "⚙️  CONFIGURACIÓN DEL SISTEMA"
+  echo "Entorno: $ENV | Archivo: $COMPOSE_FILE"
+  echo "======================================="
+  echo ""
+  echo " 1. 🔧 Cambiar entorno (dev, qa, prd)"
+  echo " 2. 🌐 Actualizar IP en Docker Compose"
+  echo " 3. 🔍 Verificar IP actual"
+  echo ""
+  echo " V. ⬅️  Volver al menú principal"
+  echo " S. 🚪 Salir"
+  echo "======================================="
+  read -p "👉 Seleccione una opción [1-3, V, S]: " choice
+
+  case "$choice" in
+    1) change_env ;;
+    2) update_ip_menu ;;
+    3) check_ip_menu ;;
+    [Vv]) menu ;;
+    [Ss]) exit_script ;;
+    *)
+      echo "❌ Opción inválida. Inténtelo de nuevo."
+      sleep 3
+      menu_configuracion
+      ;;
+  esac
+}
+
+# Submenú: Herramientas Expo
+menu_expo() {
+  clear
+  echo "======================================="
+  echo "📱 HERRAMIENTAS EXPO"
+  echo "Entorno: $ENV | Archivo: $COMPOSE_FILE"
+  echo "======================================="
+  echo ""
+  echo " 1. 🚀 Iniciar Expo (manual desde contenedor)"
+  echo " 2. 🔨 Build Expo (próximamente)"
+  echo " 3. 📤 Publicar Expo (próximamente)"
+  echo " 4. 🔧 Configurar Expo (próximamente)"
+  echo ""
+  echo " V. ⬅️  Volver al menú principal"
+  echo " S. 🚪 Salir"
+  echo "======================================="
+  read -p "👉 Seleccione una opción [1-4, V, S]: " choice
+
+  case "$choice" in
+    1) iniciar_expo ;;
+    2) 
+      echo "🚧 Función en desarrollo..."
+      sleep 3
+      menu_expo
+      ;;
+    3) 
+      echo "🚧 Función en desarrollo..."
+      sleep 3
+      menu_expo
+      ;;
+    4) 
+      echo "🚧 Función en desarrollo..."
+      sleep 3
+      menu_expo
+      ;;
+    [Vv]) menu ;;
+    [Ss]) exit_script ;;
+    *)
+      echo "❌ Opción inválida. Inténtelo de nuevo."
+      sleep 3
+      menu_expo
+      ;;
+  esac
+}
+
+# Funciones 
+#### menu_contenedores ######
 up() {
   clear
   echo "======================================="
@@ -99,9 +336,9 @@ up() {
   echo "Iniciando Contenedores"
   echo "======================================="
   echo ""
-  docker-compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV up -d --build
+  docker compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV up -d --build
   pause
-  menu
+  menu_contenedores
 }
 
 down() {
@@ -112,9 +349,9 @@ down() {
   echo "Deteniendo y eliminando contenedores"
   echo "======================================="
   echo ""
-  docker-compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV down
+  docker compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV down
   pause
-  menu
+  menu_contenedores
 }
 
 restart() {
@@ -125,10 +362,10 @@ restart() {
   echo "Reiniciando contenedores"
   echo "======================================="
   echo ""
-  docker-compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV down
-  docker-compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV up -d --build
+  docker compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV down
+  docker compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV up -d --build
   pause
-  menu
+  menu_contenedores
 }
 
 restart_single_container() {
@@ -145,7 +382,7 @@ restart_single_container() {
 
   if [ ${#containers[@]} -eq 0 ]; then
     echo "No se encontraron contenedores activos con la etiqueta $LABEL_FILTER."
-    sleep 2
+    sleep 3
     menu
   fi
 
@@ -168,8 +405,8 @@ restart_single_container() {
 
   if ! [[ "$index" =~ ^[0-9]+$ ]] || [ "$index" -lt 1 ] || [ "$index" -gt ${#containers[@]} ]; then
     echo "Índice inválido."
-    sleep 2
-    menu
+    sleep 3
+    menu_contenedores
   fi
 
   container_id=$(echo ${containers[$((index-1))]} | awk '{print $1}')
@@ -182,7 +419,7 @@ restart_single_container() {
     echo "Error al reiniciar el contenedor $container_name."
 
   pause
-  menu
+  menu_contenedores
 }
 
 build() {
@@ -193,11 +430,12 @@ build() {
   echo "Construyendo imágenes"
   echo "======================================="
   echo ""
-  docker-compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV build
+  docker compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV build
   pause
-  menu
+  menu_contenedores
 }
 
+#### menu_monitoreo ######
 logs() {
   clear
   echo "======================================="
@@ -206,9 +444,9 @@ logs() {
   echo "Mostrando logs"
   echo "======================================="
   echo ""
-  docker-compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV logs -f
+  docker compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV logs -f
   pause
-  menu
+  menu_monitoreo
 }
 
 ps() {
@@ -225,8 +463,8 @@ ps() {
 
   if [ ${#containers[@]} -eq 0 ]; then
     echo "No se encontraron contenedores activos con la etiqueta $LABEL_FILTER."
-    sleep 2
-    menu
+    sleep 3
+    menu_monitoreo
   fi
 
   # Encabezado de la tabla
@@ -249,9 +487,8 @@ ps() {
         $((i+1)) "$formatted_name" "$formatted_image" "${formatted_ports:-"N/A"}" "${formatted_command:-"N/A"}"
   done
 
-
   pause
-  menu
+  menu_monitoreo
 }
 
 list_stack() {
@@ -268,8 +505,8 @@ list_stack() {
 
   if [ ${#containers[@]} -eq 0 ]; then
     echo "No se encontraron contenedores activos con la etiqueta $LABEL_FILTER."
-    sleep 2
-    menu
+    sleep 3
+    menu_monitoreo
   fi
 
   # Encabezado de la tabla
@@ -290,7 +527,7 @@ list_stack() {
   done
 
   pause
-  menu
+  menu_monitoreo
 }
 
 exec_stack() {
@@ -305,8 +542,8 @@ exec_stack() {
 
   if [ ${#containers[@]} -eq 0 ]; then
     echo "No se encontraron contenedores con la etiqueta $LABEL_FILTER."
-    sleep 2
-    menu
+    sleep 3
+    menu_monitoreo
   fi
 
   echo " # | ID               | NOMBRE                          | IMAGEN                              | ESTADO"
@@ -333,13 +570,13 @@ exec_stack() {
 
   # Si el usuario elige la opción de salir, volver al menú
   if [[ "$index" == "$exit_index" ]]; then
-      menu
+      menu_monitoreo
   fi
 
   if ! [[ "$index" =~ ^[0-9]+$ ]] || [ "$index" -lt 1 ] || [ "$index" -gt ${#containers[@]} ]; then
     echo "Índice inválido."
-    sleep 2
-    menu
+    sleep 3
+    menu_monitoreo
   fi
 
   container_id=$(echo ${containers[$((index-1))]} | awk '{print $1}')
@@ -361,9 +598,10 @@ exec_stack() {
     echo "No se pudo abrir una terminal en el contenedor $container_name."
   fi
   pause
-  menu
+  menu_monitoreo
 }
 
+#### menu_limpieza ######
 clean() {
   clear
   echo "======================================="
@@ -372,9 +610,9 @@ clean() {
   echo "Limpiando contenedores, redes, imágenes y volúmenes"
   echo "======================================="
   echo ""
-  docker-compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV down --rmi all --volumes --remove-orphans
+  docker compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV down --rmi all --volumes --remove-orphans
   pause
-  menu
+  menu_limpieza
 }
 
 clean_images() {
@@ -387,7 +625,7 @@ clean_images() {
   echo ""
   docker image prune -af
   pause
-  menu
+  menu_limpieza
 }
 
 clean_volumes() {
@@ -400,7 +638,7 @@ clean_volumes() {
   echo ""
   docker volume prune -f
   pause
-  menu
+  menu_limpieza
 }
 
 clean_all() {
@@ -416,7 +654,7 @@ clean_all() {
   echo "======================================="
   echo "Limpiando contenedores, redes, imágenes y volúmenes del stack..."
   echo "======================================="
-  docker-compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV down --rmi all --volumes --remove-orphans
+  docker compose -f "$COMPOSE_FILE" --env-file .env --env-file .env.$ENV down --rmi all --volumes --remove-orphans
 
   # Verificar y eliminar volúmenes huérfanos
   echo "======================================="
@@ -455,7 +693,7 @@ clean_all() {
   echo "Limpieza completada."
   echo "======================================="
   pause
-  menu
+  menu_limpieza
 }
 
 drop_persistence() {
@@ -538,18 +776,17 @@ drop_persistence() {
       echo -e "${GREEN}✅ Limpieza completada.${NC}"
       echo "======================================="
       pause
-      menu
+      menu_limpieza
       ;;
     *)
       echo "Operación cancelada."
       pause
-      menu
+      menu_limpieza
       ;;
   esac
 }
 
-
-
+#### menu_configuracion ######
 change_env() {
   clear
   echo "======================================="
@@ -561,16 +798,139 @@ change_env() {
   read -p "Ingrese el nuevo entorno: " new_env
   if [ -z "$new_env" ]; then
     echo "El entorno no puede estar vacío."
-    sleep 2
-    menu
+    sleep 3
+    menu_configuracion
   fi
   ENV="$new_env"
   define_compose_file
   echo "Entorno cambiado a: $ENV"
-  sleep 2
-  menu
+  sleep 3
+  menu_configuracion
 }
 
+# Función para el menú de actualización de IP
+update_ip_menu() {
+    clear
+    echo "======================================="
+    echo "Docker Tools - Actualizar IP"
+    echo "Entorno: $ENV"
+    echo "Archivo: $COMPOSE_FILE"
+    echo "======================================="
+    echo ""
+    
+    local current_ip=$(get_current_ip)
+    
+    if [[ -z "$current_ip" ]]; then
+        echo "❌ No se pudo detectar la IP actual del equipo."
+        echo "Puede intentar configurarla manualmente."
+        echo ""
+        read -p "¿Desea ingresar la IP manualmente? (S/N): " manual_ip
+        
+        if [[ $manual_ip =~ ^[Ss]$ ]]; then
+            read -p "Ingrese la IP: " manual_ip_value
+            if [[ -n "$manual_ip_value" ]]; then
+                update_ip_in_compose "$manual_ip_value" "$COMPOSE_FILE"
+            else
+                echo "❌ IP vacía. Operación cancelada."
+            fi
+        fi
+    else
+        echo "🌐 IP actual detectada: $current_ip"
+        echo ""
+        
+        # Verificar IP actual en el compose
+        if [[ -f "$COMPOSE_FILE" ]]; then
+            local compose_ip=$(grep "REACT_NATIVE_PACKAGER_HOSTNAME=" "$COMPOSE_FILE" | cut -d'=' -f2 | tr -d ' ')
+            echo "📄 IP en $COMPOSE_FILE: $compose_ip"
+            echo ""
+            
+            if [[ "$compose_ip" == "$current_ip" ]]; then
+                echo "✅ Las IPs coinciden. No es necesario actualizar."
+            else
+                echo "⚠️  Las IPs no coinciden."
+                read -p "¿Desea actualizar la IP en $COMPOSE_FILE? (S/N): " confirm
+                
+                if [[ $confirm =~ ^[Ss]$ ]]; then
+                    update_ip_in_compose "$current_ip" "$COMPOSE_FILE"
+                else
+                    echo "Operación cancelada."
+                fi
+            fi
+        else
+            echo "❌ El archivo $COMPOSE_FILE no existe."
+        fi
+    fi
+    
+    pause
+    menu_configuracion
+}
+
+# Función para el menú de verificación de IP
+check_ip_menu() {
+    clear
+    echo "======================================="
+    echo "Docker Tools - Verificar IP"
+    echo "Entorno: $ENV"
+    echo "Archivo: $COMPOSE_FILE"
+    echo "======================================="
+    echo ""
+    
+    local current_ip=$(get_current_ip)
+    
+    if [[ -n "$current_ip" ]]; then
+        echo "🌐 IP actual del equipo: $current_ip"
+        
+        # Mostrar información de red adicional
+        echo ""
+        echo "📡 Información de red:"
+        if command -v hostname &> /dev/null; then
+            echo "   Hostname: $(hostname 2>/dev/null || echo 'No disponible')"
+        fi
+        
+        # Verificar IP en compose
+        if [[ -f "$COMPOSE_FILE" ]]; then
+            local compose_ip=$(grep "REACT_NATIVE_PACKAGER_HOSTNAME=" "$COMPOSE_FILE" | cut -d'=' -f2 | tr -d ' ')
+            echo "📄 IP en $COMPOSE_FILE: $compose_ip"
+            
+            if [[ "$compose_ip" == "$current_ip" ]]; then
+                echo "✅ Estado: Las IPs coinciden"
+            else
+                echo "⚠️  Estado: Las IPs NO coinciden"
+                echo "   Considere actualizar la IP usando la opción 17 del menú principal."
+            fi
+        else
+            echo "❌ El archivo $COMPOSE_FILE no existe."
+        fi
+        
+        # Mostrar interfaces de red disponibles
+        echo ""
+        echo "🔍 Interfaces de red disponibles:"
+        if command -v ip &> /dev/null; then
+            ip addr show | grep "inet " | grep -v "127.0.0.1" | awk '{print "   " $2}' | cut -d'/' -f1
+        elif command -v ifconfig &> /dev/null; then
+            ifconfig | grep "inet " | grep -v "127.0.0.1" | awk '{print "   " $2}'
+        else
+            echo "   No se pueden mostrar las interfaces de red"
+        fi
+        
+    else
+        echo "❌ No se pudo detectar la IP actual del equipo."
+        echo ""
+        echo "💡 Métodos de detección probados:"
+        echo "   - ip route"
+        echo "   - hostname -I"
+        echo "   - ifconfig"
+        echo "   - netstat"
+        echo ""
+        echo "Puede configurar la IP manualmente usando la opción 17 del menú principal."
+    fi
+    
+    pause
+    menu_configuracion
+}
+
+
+#### menu_expo ######
 iniciar_expo() {
   clear
   echo "======================================="
@@ -585,7 +945,7 @@ iniciar_expo() {
   if [ ${#containers[@]} -eq 0 ]; then
     echo "❌ No se encontraron contenedores relacionados con Expo."
     pause
-    menu
+    menu_expo
   fi
 
   # Si hay más de un contenedor, permitir selección
@@ -602,7 +962,7 @@ iniciar_expo() {
     if ! [[ "$index" =~ ^[0-9]+$ ]] || [ "$index" -lt 1 ] || [ "$index" -gt ${#containers[@]} ]; then
       echo "❌ Índice inválido."
       pause
-      menu
+      menu_expo
     fi
 
     container_id=$(echo "${containers[$((index-1))]}" | awk '{print $1}')
@@ -623,7 +983,7 @@ iniciar_expo() {
   else
     echo "❌ No se pudo determinar una shell disponible en el contenedor."
     pause
-    menu
+    menu_expo
   fi
 
   echo "✅ Shell detectada: $shell"
@@ -636,9 +996,11 @@ iniciar_expo() {
   docker exec -it "$container_id" $shell -c "bash /scripts/start-expo.sh"
 
   pause
-  menu
+  menu_expo
 }
 
+
+#### System ######
 exit_script() {
   clear
   echo "======================================="
