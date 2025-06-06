@@ -20,6 +20,6 @@ services:
     environment:
       - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
       - EXPO_NO_TELEMETRY=1
-      - REACT_NATIVE_PACKAGER_HOSTNAME=10.101.0.148  # 👈 tu IP real
+      - REACT_NATIVE_PACKAGER_HOSTNAME=192.168.3.83
     entrypoint: ["sleep", "infinity"]    # 👈 El contenedor queda esperando
     tty: true
