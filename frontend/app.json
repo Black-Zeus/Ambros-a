@@ -14,7 +14,9 @@
 
     "plugins": [],
 
-    "orientation": "portrait",
+    
+    "orientation": "default", 
+
     "icon": "./assets/icon.png",
 
     "userInterfaceStyle": "light",
