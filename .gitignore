@@ -57,3 +57,6 @@ jest-cache/
 
 # Output de scripts
 scripts/output/
+
+# BackUp DockerCompose
+docker-compose-*.yml.backup.*
