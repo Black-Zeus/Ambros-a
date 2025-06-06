@@ -60,3 +60,5 @@ scripts/output/
 
 # BackUp DockerCompose
 docker-compose-*.yml.backup.*
+
+package-lock.json
