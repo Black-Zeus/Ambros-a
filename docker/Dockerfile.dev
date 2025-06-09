@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Instalamos Expo CLI de forma global
 # Esto permite usar "npx expo ..." sin necesidad de instalar localmente cada vez
-RUN npm install -g expo-cli
+RUN npm install -g expo-cli eas-cli
 
 # Copiamos todo temporalmente para verificar existencia de archivos
 COPY . /tmp/build-context/
