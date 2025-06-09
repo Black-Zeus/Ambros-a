@@ -289,10 +289,8 @@ menu_expo() {
   echo "Entorno: $ENV | Archivo: $COMPOSE_FILE"
   echo "======================================="
   echo ""
-  echo " 1. 🚀 Iniciar Expo (manual desde contenedor)"
-  echo " 2. 🔨 Build Expo (próximamente)"
-  echo " 3. 📤 Publicar Expo (próximamente)"
-  echo " 4. 🔧 Configurar Expo (próximamente)"
+  echo "1) 🚀 Iniciar Expo Development Server"
+  echo "2) 🏗️  EAS Build (Generar APK/AAB)"
   echo ""
   echo " V. ⬅️  Volver al menú principal"
   echo " S. 🚪 Salir"
@@ -302,19 +300,7 @@ menu_expo() {
   case "$choice" in
     1) iniciar_expo ;;
     2) 
-      echo "🚧 Función en desarrollo..."
-      sleep 3
-      menu_expo
-      ;;
-    3) 
-      echo "🚧 Función en desarrollo..."
-      sleep 3
-      menu_expo
-      ;;
-    4) 
-      echo "🚧 Función en desarrollo..."
-      sleep 3
-      menu_expo
+      eas_build_expo
       ;;
     [Vv]) menu ;;
     [Ss]) exit_script ;;
@@ -999,6 +985,181 @@ iniciar_expo() {
   menu_expo
 }
 
+#### menu_expo ######
+iniciar_expo() {
+  clear
+  echo "======================================="
+  echo "Docker Tools - Iniciar Expo Manualmente"
+  echo "Label filter: $LABEL_FILTER"
+  echo "======================================="
+  echo ""
+
+  # Buscar contenedores relacionados con Expo
+  mapfile -t containers < <(docker ps --filter "label=$LABEL_FILTER" --format "{{.ID}} {{.Names}} {{.Image}}" | grep -i "expo")
+
+  if [ ${#containers[@]} -eq 0 ]; then
+    echo "❌ No se encontraron contenedores relacionados con Expo."
+    pause
+    menu_expo
+  fi
+
+  # Si hay más de un contenedor, permitir selección
+  if [ ${#containers[@]} -gt 1 ]; then
+    echo "Se encontraron múltiples contenedores relacionados con Expo:"
+    for i in "${!containers[@]}"; do
+      container=(${containers[$i]})
+      printf "%2d | %-16s | %-30s\n" \
+        $((i+1)) "$(truncate_text "${container[0]}" 16)" "$(truncate_text "${container[1]}" 30)"
+    done
+    echo
+    read -p "Seleccione el índice del contenedor: " index
+
+    if ! [[ "$index" =~ ^[0-9]+$ ]] || [ "$index" -lt 1 ] || [ "$index" -gt ${#containers[@]} ]; then
+      echo "❌ Índice inválido."
+      pause
+      menu_expo
+    fi
+
+    container_id=$(echo "${containers[$((index-1))]}" | awk '{print $1}')
+    container_name=$(echo "${containers[$((index-1))]}" | awk '{print $2}')
+  else
+    container_id=$(echo "${containers[0]}" | awk '{print $1}')
+    container_name=$(echo "${containers[0]}" | awk '{print $2}')
+    echo "✅ Contenedor encontrado: $container_name"
+  fi
+
+  echo
+  echo "🔍 Verificando shell disponible en $container_name..."
+
+  if docker exec "$container_id" bash -c "echo Bash disponible" &>/dev/null; then
+    shell="bash"
+  elif docker exec "$container_id" sh -c "echo SH disponible" &>/dev/null; then
+    shell="sh"
+  else
+    echo "❌ No se pudo determinar una shell disponible en el contenedor."
+    pause
+    menu_expo
+  fi
+
+  echo "✅ Shell detectada: $shell"
+  echo
+  echo "🚀 Ejecutando /scripts/start-expo.sh en $container_name..."
+  echo
+  echo "    docker exec -it $container_name $shell -c \"bash /scripts/start-expo.sh\""
+  echo
+
+  docker exec -it "$container_id" $shell -c "bash /scripts/start-expo.sh"
+
+  pause
+  menu_expo
+}
+
+#### EAS BUILD ######
+eas_build_expo() {
+  clear
+  echo "======================================="
+  echo "Docker Tools - EAS Build (APK/AAB)"
+  echo "Label filter: $LABEL_FILTER"
+  echo "======================================="
+  echo ""
+
+  # Buscar contenedores relacionados con Expo
+  mapfile -t containers < <(docker ps --filter "label=$LABEL_FILTER" --format "{{.ID}} {{.Names}} {{.Image}}" | grep -i "expo")
+
+  if [ ${#containers[@]} -eq 0 ]; then
+    echo "❌ No se encontraron contenedores relacionados con Expo."
+    pause
+    menu_expo
+  fi
+
+  # Si hay más de un contenedor, permitir selección
+  if [ ${#containers[@]} -gt 1 ]; then
+    echo "Se encontraron múltiples contenedores relacionados con Expo:"
+    for i in "${!containers[@]}"; do
+      container=(${containers[$i]})
+      printf "%2d | %-16s | %-30s\n" \
+        $((i+1)) "$(truncate_text "${container[0]}" 16)" "$(truncate_text "${container[1]}" 30)"
+    done
+    echo
+    read -p "Seleccione el índice del contenedor: " index
+
+    if ! [[ "$index" =~ ^[0-9]+$ ]] || [ "$index" -lt 1 ] || [ "$index" -gt ${#containers[@]} ]; then
+      echo "❌ Índice inválido."
+      pause
+      menu_expo
+    fi
+
+    container_id=$(echo "${containers[$((index-1))]}" | awk '{print $1}')
+    container_name=$(echo "${containers[$((index-1))]}" | awk '{print $2}')
+  else
+    container_id=$(echo "${containers[0]}" | awk '{print $1}')
+    container_name=$(echo "${containers[0]}" | awk '{print $2}')
+    echo "✅ Contenedor encontrado: $container_name"
+  fi
+
+  echo
+  echo "🔍 Verificando shell disponible en $container_name..."
+
+  if docker exec "$container_id" bash -c "echo Bash disponible" &>/dev/null; then
+    shell="bash"
+  elif docker exec "$container_id" sh -c "echo SH disponible" &>/dev/null; then
+    shell="sh"
+  else
+    echo "❌ No se pudo determinar una shell disponible en el contenedor."
+    pause
+    menu_expo
+  fi
+
+  echo "✅ Shell detectada: $shell"
+  echo
+  
+  # Verificar que el script eas-build.sh existe
+  if ! docker exec "$container_id" $shell -c "test -f /scripts/eas-build.sh" &>/dev/null; then
+    echo "❌ El script /scripts/eas-build.sh no existe en el contenedor."
+    echo "   Asegúrate de que el script esté montado en el volumen."
+    pause
+    menu_expo
+  fi
+
+  # Verificar que EXPO_TOKEN esté configurado
+  if ! docker exec "$container_id" $shell -c "test -n \"\$EXPO_TOKEN\"" &>/dev/null; then
+    echo "⚠️  ADVERTENCIA: La variable EXPO_TOKEN no está configurada."
+    echo "   El build podría fallar sin esta variable."
+    echo
+    read -p "¿Continuar de todas formas? [y/N]: " continuar
+    if [[ ! "$continuar" =~ ^[Yy]$ ]]; then
+      echo "❌ Build cancelado."
+      pause
+      menu_expo
+    fi
+  fi
+
+  echo "🏗️  Ejecutando EAS Build en $container_name..."
+  echo
+  echo "    docker exec -it $container_name $shell -c \"bash /scripts/eas-build.sh\""
+  echo "═══════════════════════════════════════════════════════════════════"
+  echo
+
+  # Ejecutar el script de build
+  docker exec -it "$container_id" $shell -c "bash /scripts/eas-build.sh"
+  
+  build_exit_code=$?
+  echo
+  echo "═══════════════════════════════════════════════════════════════════"
+  
+  if [ $build_exit_code -eq 0 ]; then
+    echo "✅ EAS Build completado exitosamente!"
+    echo "📱 Revisa tu dashboard de Expo para descargar el APK/AAB:"
+    echo "   https://expo.dev/accounts/blackzeus/projects/Ambrosia/builds"
+  else
+    echo "❌ EAS Build falló (código de salida: $build_exit_code)"
+    echo "   Revisa los errores anteriores para más detalles."
+  fi
+
+  echo
+  pause
+  menu_expo
+}
 
 #### System ######
 exit_script() {
