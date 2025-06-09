@@ -1,0 +1,16 @@
+{
+  "sensitive_variables": [
+    "API_SECRET_KEY",
+    "API_SECRET_KEY_REFRESH",
+    "BACKEND_API_SECRET_KEY",
+    "BACKEND_API_SECRET_KEY_REFRESH",
+    "EXPO_TOKEN",
+    "JWT_SECRET",
+    "JWT_REFRESH_SECRET",
+    "DATABASE_PASSWORD",
+    "REDIS_PASSWORD",
+    "MYSQL_ROOT_PASSWORD",
+    "POSTGRES_PASSWORD"
+  ],
+  "description": "Variables que contienen información sensible y deben ser omitidas del template"
+}
