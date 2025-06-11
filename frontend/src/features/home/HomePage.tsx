@@ -198,7 +198,7 @@ const MenuItem = ({ item }: { item: typeof menuItems[0] }) => {
 };
 
 // Componente principal del Home
-export const Home = () => {
+export const HomePage = () => {
   return (
     <View className="flex-1 bg-secondary-950">
       <StatusBar barStyle="light-content" backgroundColor="#1A0F0A" />

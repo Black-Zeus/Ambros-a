@@ -17,7 +17,7 @@ import {
   CrimsonText_700Bold,
 } from '@expo-google-fonts/crimson-text';
 
-import Home from './src/Home';
+import HomePage from './src/features/home/HomePage';
 import './global.css';
 
 // Prevenir que la splash screen se oculte automáticamente
@@ -66,7 +66,7 @@ export default function App() {
 
   return (
     <>
-      <Home />
+      <HomePage />
       <StatusBar style="light" backgroundColor="#1A0F0A" translucent={false} />
     </>
   );

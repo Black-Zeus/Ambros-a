@@ -1,0 +1,30 @@
+{
+    "currentVersion": "1.1.0",
+    "installedVersion": "1.0.0",
+    "migrations": [
+        {
+            "version": "1.0.0",
+            "description": "Schema inicial con recetas, ingredientes y categorías",
+            "features": [
+                "recetas básicas",
+                "herbolario",
+                "categorías"
+            ],
+            "dependencies": [],
+            "executed": true
+        },
+        {
+            "version": "1.1.0",
+            "description": "Sistema de favoritos y calificaciones",
+            "features": [
+                "favoritos",
+                "ratings",
+                "historial"
+            ],
+            "dependencies": [
+                "1.0.0"
+            ],
+            "executed": false
+        }
+    ]
+}
