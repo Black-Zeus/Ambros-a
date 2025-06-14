@@ -66,21 +66,21 @@ module.exports = {
 
       // 🖋️ Tipografías
       fontFamily: {
-        // Fuentes principales con alias
-        'cinzel': ['Cinzel'],              // Cinzel_600SemiBold
-        'cinzel-bold': ['CinzelBold'],     // Cinzel_700Bold
-        'cinzel-regular': ['Cinzel_400Regular'],
-        'cinzel-medium': ['Cinzel_500Medium'],
+        // Fuentes principales con alias - CORREGIDOS para coincidir con App.tsx
+        'cinzel': ['Cinzel'],                    // ✅ Coincide con App.tsx
+        'cinzel-bold': ['CinzelBold'],           // ✅ Coincide con App.tsx  
+        'cinzel-regular': ['CinzelRegular'],     // ✅ Coincide con App.tsx
+        'cinzel-medium': ['CinzelMedium'],       // ✅ Coincide con App.tsx
 
-        'crimson': ['Crimson'],            // CrimsonText_400Regular
-        'crimson-bold': ['CrimsonBold'],   // CrimsonText_700Bold
-        'crimson-semibold': ['CrimsonText_600SemiBold'],
+        'crimson': ['Crimson'],                  // ✅ Coincide con App.tsx
+        'crimson-bold': ['CrimsonBold'],         // ✅ Coincide con App.tsx
+        'crimson-semibold': ['CrimsonSemiBold'], // ✅ Coincide con App.tsx
 
         // Alias semánticos para tu app
-        'display': ['Cinzel'],             // Para títulos principales
-        'heading': ['Cinzel_500Medium'],   // Para subtítulos
-        'body': ['Crimson'],               // Para texto normal
-        'caption': ['CrimsonText_600SemiBold'], // Para texto pequeño destacado
+        'display': ['CinzelBold'],               // Para títulos principales
+        'heading': ['CinzelMedium'],             // Para subtítulos  
+        'body': ['Crimson'],                     // Para texto normal
+        'caption': ['CrimsonSemiBold'],          // Para texto pequeño destacado
       },
 
       // 🎨 Gradientes personalizados actualizados
