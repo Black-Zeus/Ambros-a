@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -17,7 +17,7 @@ import {
   CrimsonText_700Bold,
 } from '@expo-google-fonts/crimson-text';
 
-import HomePage from './src/features/home/HomePage';
+import HomePage from '@/features/home/HomePage';
 import './global.css';
 
 // Prevenir que la splash screen se oculte automáticamente
