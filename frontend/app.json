@@ -4,7 +4,7 @@
     "slug": "Ambrosia",
     "version": "1.0.0",
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/expo/favicon.png"
     },
     "experiments": {
       "tsconfigPaths": true
@@ -13,10 +13,10 @@
       "expo-font"
     ],
     "orientation": "default",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/expo/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/expo/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -29,7 +29,7 @@
     "android": {
       "package": "com.blackzeus.ambrosia",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/expo/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },

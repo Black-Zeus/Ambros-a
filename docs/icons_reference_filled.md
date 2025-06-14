@@ -70,3 +70,29 @@
 | 36 | stats | Estadísticas | 📊 | bar-chart | chart-bar | chart | graph | FaChartBar |
 | 37 | badge | Logros | 🏅 | award | medal | medal | achievement | FaMedal |
 | 38 | comment | Notas personales | 📝 | message-square | chat | message | scroll-unfurled | FaComment |
+
+### Prompt para generacion de iconose
+
+A small, weathered rune stone icon, designed to represent a specific action (e.g., [ICON MEANING]) at a visual scale of 32 to 64 pixels. The stone is irregularly shaped, like a natural pebble found on a windswept coastal trail or mountain ridge — with a rough, cracked surface, earthy brown to grayish tones, and detailed natural erosion.
+
+In its center, a symbolic, abstract rune is carved in deep bas-relief, representing the action. The carving is angular, minimalist, and stylized, evoking Norse or druidic symbology. Inside the carved lines, moss, lichen, and bits of earth or grime have collected over time, giving a feeling of abandonment and age.
+
+The rune's outline and inner depth must be clearly visible at small icon sizes, with soft ambient lighting highlighting the relief and edge wear.
+
+The icon has no background, and the canvas should be fully transparent, leaving only the rune stone visible.
+
+Emphasize surface texture, natural imperfections, and a realistic ancient look, as if hand-carved and forgotten for centuries.
+
+#### Para Usar
+
+Simplemente reemplaza `[ICON MEANING]` con la acción deseada. Ejemplos:
+
+| Inglés (`[ICON MEANING]`) | Español |
+|---------------------------|---------|
+| `search or discovery`     | buscar o descubrir |
+| `add or summoning`        | agregar o invocar |
+| `edit or inscribe`        | editar o inscribir |
+| `delete or banish`        | eliminar o desterrar |
+| `save or preserve`        | guardar o preservar |
+| `favorite or heart`       | favorito o corazón |
+| `settings or control`     | configuración o controlar |

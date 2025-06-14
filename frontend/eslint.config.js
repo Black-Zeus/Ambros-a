@@ -1,15 +1,18 @@
-/* eslint-env node */
-const { defineConfig } = require('eslint/config');
-const expoConfig = require('eslint-config-expo/flat');
+// eslint.config.js
+import expo from 'eslint-config-expo/flat';
+import importPlugin from 'eslint-plugin-import';
 
-module.exports = defineConfig([
-  expoConfig,
+export default [
   {
-    ignores: ['dist/*'],
-  },
-  {
+    ...expo,
+    ignores: ['dist/**', 'node_modules/**'],
+    plugins: {
+      import: importPlugin,
+    },
     rules: {
+      ...expo.rules,
       'react/display-name': 'off',
+      'import/no-unresolved': ['error', { ignore: ['expo-sqlite'] }],
     },
   },
-]);
+];
