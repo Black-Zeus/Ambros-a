@@ -1,14 +1,15 @@
 services:
   expo:
-    container_name: ambrosia-expo-dev
+    container_name: ambrosia-expo
     build:
       context: ./frontend
       dockerfile: ../docker/Dockerfile.dev
+    image: ambrosia-expo:1.0.0  
     working_dir: /app
     volumes:
       - ./frontend:/app
       - ./scripts:/scripts:ro        # 👈 Montaje del script en modo solo lectura
-      - /app/node_modules
+      #- /app/node_modules
     labels:
       - stack=Ambrosia
     ports:

@@ -1,33 +1,20 @@
 # Imagen base ligera de Node.js (ideal para desarrollo frontend)
 FROM node:24-alpine
 
-# Instalamos bash para poder usar scripts interactivos dentro del contenedor
+# Instalamos bash para scripts interactivos dentro del contenedor
 RUN apk add --no-cache bash
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Instalamos Expo CLI de forma global
-# Esto permite usar "npx expo ..." sin necesidad de instalar localmente cada vez
+# Copiamos los manifiestos de dependencias (NO todo el proyecto)
+COPY package*.json ./
+
+# Instalamos herramientas globales para Expo y EAS
 RUN npm install -g expo-cli eas-cli
 
-# Copiamos todo temporalmente para verificar existencia de archivos
-COPY . /tmp/build-context/
+# Nota: NO instalamos las dependencias del proyecto aquí
+# El script start-expo.sh se encargará de hacer `npm install` si es necesario
 
-# Lógica condicional para package*.json
-RUN if ls /tmp/build-context/package*.json 1> /dev/null 2>&1; then \
-        echo "📦 Archivos package encontrados, copiando e instalando dependencias..."; \
-        cp /tmp/build-context/package*.json ./; \
-        npm install; \
-        echo "✅ Dependencias instaladas correctamente"; \
-    else \
-        echo "⚠️ Se continúa sin dependencias node"; \
-    fi
-
-# Copiamos el resto de archivos del proyecto (excluyendo package*.json para evitar duplicados)
-RUN cp -r /tmp/build-context/* ./ 2>/dev/null || true && \
-    rm -rf /tmp/build-context
-
-# Comando por defecto al ejecutar el contenedor (puede ser sobreescrito en docker-compose)
-# "--lan" expone la app en la red local para que Expo Go o navegadores puedan conectarse
+# Comando por defecto (puede ser sobrescrito desde docker-compose)
 CMD ["npx", "expo", "start", "--lan"]
